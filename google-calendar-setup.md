@@ -14,8 +14,6 @@
 
 **Step 2:** Navigate to "APIs & Services" > "Credentials"
 
-**Step 3:** Find your OAuth 2.0 Client ID: `917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com`
-
 **Step 4:** Click on it to edit
 
 **Step 5:** **MOST IMPORTANT** - Add EXACT Redirect URI:
@@ -55,7 +53,6 @@
 **Important:** Click "Save" button at the bottom of each configuration page
 
 ## Your Current Configuration
-- **Client ID:** 917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com
 - **Redirect URI:** https://decisionmaker.shrawantravels.com/api/auth/google/callback
 - **Current Domain:** decisionmaker.shrawantravels.com
 

@@ -11,8 +11,7 @@ The Google Calendar integration is showing "Access blocked: Authorization Error"
 ### Step 1: Access Your Google Cloud Console
 1. Go to: https://console.cloud.google.com/
 2. Navigate to: **APIs & Services → Credentials**
-3. Find this OAuth 2.0 Client ID: `917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com`
-4. Click on it to edit
+
 
 ### Step 2: Configure Redirect URI (CRITICAL)
 In the **"Authorized redirect URIs"** section, you must add this EXACT URL:
@@ -67,7 +66,6 @@ This error means Google is rejecting our client credentials during token exchang
 4. User not added to test users
 
 ## OUR APPLICATION IS CORRECTLY CONFIGURED
-- Client ID: `917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com`
 - Client Secret: `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`
 - Redirect URI: `https://decisionmaker.shrawantravels.com/api/auth/google/callback`
 

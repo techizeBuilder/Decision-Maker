@@ -32,7 +32,6 @@ You need to add your email (`mlp.yashkumar@gmail.com`) to the Test Users section
 
 ## 🔧 TECHNICAL VERIFICATION
 The application configuration is correct:
-- ✅ Client ID: `917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com`
 - ✅ Client Secret: Present and valid
 - ✅ Redirect URI: `https://decisionmaker.shrawantravels.com/api/auth/google/callback`
 - ✅ Google Calendar API: Enabled

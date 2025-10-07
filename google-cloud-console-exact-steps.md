@@ -11,7 +11,6 @@
 ### Step 1: Access OAuth Client Settings
 1. Go to: https://console.cloud.google.com/
 2. Navigate to: **APIs & Services > Credentials**
-3. Find your OAuth 2.0 Client ID: `917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com`
 4. **Click on it** to open configuration
 
 ### Step 2: Configure Authorized Redirect URIs

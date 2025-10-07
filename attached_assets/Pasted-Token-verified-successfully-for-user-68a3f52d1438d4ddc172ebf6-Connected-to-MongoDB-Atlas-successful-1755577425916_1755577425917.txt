@@ -27,11 +27,6 @@ Google Calendar callback received: {
 }
 Processing Google Calendar callback for user: 68a3f52d1438d4ddc172ebf6
 Attempting to exchange code for tokens...
-OAuth2 Client config: {
-  clientId: '917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com',
-  redirectUri: 'https://decisionmaker.shrawantravels.com/api/auth/google/callback',
-  hasClientSecret: true
-}
 Received Google Calendar tokens: {
   hasAccessToken: true,
   hasRefreshToken: true,
