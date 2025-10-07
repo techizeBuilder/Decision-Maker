@@ -1,0 +1,50 @@
+2025-08-19T03:55:11.483292905Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:11.501207512Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:11.721890004Z 3:55:11 AM [express] GET /api/sales-rep/invitations 304 in 221ms :: [{"_id":"68a3f4dc1438d4ddc172ebe…
+2025-08-19T03:55:12.147911312Z 3:55:12 AM [express] GET /api/sales-rep/metrics 304 in 665ms :: {"callCredits":1,"maxCallCredits":1,…
+2025-08-19T03:55:12.255591549Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:12.255796905Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:12.255810955Z Looking for user with email: mlp.yashkumar@gmail.com
+2025-08-19T03:55:12.479183942Z Found user: YES
+2025-08-19T03:55:13.822259151Z 3:55:13 AM [express] POST /api/simulate/dm-onboarding-complete 200 in 1567ms :: {"success":true,"mes…
+2025-08-19T03:55:14.368089733Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:14.398757924Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:14.401367267Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:14.620788434Z 3:55:14 AM [express] GET /api/sales-rep/database-access 200 in 222ms :: {"hasAccess":true,"message":…
+2025-08-19T03:55:15.041071583Z 3:55:15 AM [express] GET /api/sales-rep/credits 200 in 674ms :: {"credits":[{"_id":"68a3f5a11438d4dd…
+2025-08-19T03:55:15.064511683Z 3:55:15 AM [express] GET /api/sales-rep/metrics 304 in 663ms :: {"callCredits":1,"maxCallCredits":1,…
+2025-08-19T03:55:15.198780608Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:15.198823629Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:15.644076421Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:15.866912373Z EMAIL ADDON DEBUG: User email: mlp.yashvantgupta@gmail.com packageType: basic hasEmailAddon: false
+2025-08-19T03:55:15.866942884Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:16.086524336Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:16.528506667Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:16.749757525Z User 68a3f49d1438d4ddc172ebdf (sales_rep) with basic plan gets 5 monthly calls
+2025-08-19T03:55:16.970571671Z Sales rep 68a3f49d1438d4ddc172ebdf: Plan limit=5, Accepted DMs=2, Connected calendar DMs=0, Final limit=0
+2025-08-19T03:55:17.195151111Z EMAIL ADDON DEBUG: DM processing - canSeeDetails: false isEnterprise: false hasAddon: false bookedBefore: false
+2025-08-19T03:55:17.195192992Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:17.637993776Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:17.859506782Z User 68a3f52d1438d4ddc172ebf6 (decision_maker) with free plan gets 3 monthly calls
+2025-08-19T03:55:18.080893913Z Sales rep has 0/0 calls remaining this month
+2025-08-19T03:55:18.080926004Z Returning 1 available DMs (0 filtered out for call limits), 0 unlocked
+2025-08-19T03:55:18.303278282Z 3:55:18 AM [express] GET /api/sales-rep/available-dms-gated 200 in 3105ms :: {"dms":[{"id":"68a3f52d…
+2025-08-19T03:55:35.745981566Z Token verified successfully for user: 68a3f49d1438d4ddc172ebdf
+2025-08-19T03:55:35.74611572Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:35.967539363Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:36.410884043Z Connected to MongoDB Atlas successfully
+2025-08-19T03:55:36.632249295Z User 68a3f49d1438d4ddc172ebdf (sales_rep) with basic plan gets 5 monthly calls
+2025-08-19T03:55:36.853235876Z Sales rep 68a3f49d1438d4ddc172ebdf: Plan limit=5, Accepted DMs=2, Connected calendar DMs=0, Final limit=0
+2025-08-19T03:55:36.854319386Z 3:55:36 AM [express] GET /api/user/can-book-calls 304 in 1109ms :: {"canBook":false,"remainingCalls"…
+2025-08-19T03:56:59.821021649Z Running post-call feedback email job...
+2025-08-19T03:56:59.821135242Z Connected to MongoDB Atlas successfully
+2025-08-19T03:57:00.042791703Z getAllCalls: Found 1 calls in database
+2025-08-19T03:57:00.483810033Z Found 1 total calls in database
+2025-08-19T03:57:00.483832484Z Checking call 68a0adc67c9302328ff7395d: status=completed, scheduledAt=Sun Aug 17 2025 03:30:00 GMT+0000 (Coordinated Universal Time), completedAt=undefined
+2025-08-19T03:57:00.483846124Z Fixing completed call 68a0adc67c9302328ff7395d - adding completedAt timestamp
+2025-08-19T03:57:00.716230194Z Successfully added completedAt to call 68a0adc67c9302328ff7395d
+2025-08-19T03:57:00.716346957Z Connected to MongoDB Atlas successfully
+2025-08-19T03:57:00.937273728Z getAllCalls: Found 1 calls in database
+2025-08-19T03:57:01.379527682Z Filtering call 68a0adc67c9302328ff7395d: status=completed, completedAt=undefined
+2025-08-19T03:57:01.379564894Z Call 68a0adc67c9302328ff7395d filtered out: no completedAt timestamp
+2025-08-19T03:57:01.379569383Z Found 0 calls that were marked as completed in the last 24 hours

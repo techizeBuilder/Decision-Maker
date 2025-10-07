@@ -1,0 +1,76 @@
+Token verified successfully for user: 68a3f52d1438d4ddc172ebf6
+Connected to MongoDB Atlas successfully
+3:54:27 AM [express] GET /api/decision-maker/calls 304 in 222ms :: []
+Connected to MongoDB Atlas successfully
+Calendar status check for user: mlp.yashkumar@gmail.com
+Calendar integration enabled: false
+Has Google Calendar tokens: false
+3:54:27 AM [express] GET /api/calendar/status 200 in 228ms :: {"connected":false,"email":"mlp.yashku…
+Connected to MongoDB Atlas successfully
+Connected to MongoDB Atlas successfully
+3:54:27 AM [express] GET /api/user/flags-count 304 in 446ms :: {"flags":0}
+Connected to MongoDB Atlas successfully
+Connected to MongoDB Atlas successfully
+User 68a3f52d1438d4ddc172ebf6 (decision_maker) with free plan gets 3 monthly calls
+3:54:28 AM [express] GET /api/user/can-book-calls 304 in 909ms :: {"canBook":true,"remainingCalls":3}
+User 68a3f52d1438d4ddc172ebf6 (decision_maker) with free plan gets 3 monthly calls
+3:54:28 AM [express] GET /api/decision-maker/metrics 304 in 1105ms :: {"completedCalls":0,"remaining…
+Token verified successfully for user: 68a3f52d1438d4ddc172ebf6
+3:54:31 AM [express] GET /api/auth/google/connect 200 in 2ms :: {"authUrl":"https://accounts.google.…
+Google Calendar callback received: {
+  hasCode: true,
+  hasUserId: true,
+  hasError: false,
+  fullUrl: '/api/auth/google/callback?state=68a3f52d1438d4ddc172ebf6&code=4/0AVMBsJiw8-p1yXaevwyzSNEBdUkejCYwN6AQyj-JvXcuyQKL0IBw-iWmmErHezmfHsIEPQ&scope=https://www.googleapis.com/auth/calendar.events%20https://www.googleapis.com/auth/calendar.readonly',
+  clientId: '917137353724...',
+  redirectUri: 'https://decisionmaker.shrawantravels.com/api/auth/google/callback'
+}
+Processing Google Calendar callback for user: 68a3f52d1438d4ddc172ebf6
+Attempting to exchange code for tokens...
+OAuth2 Client config: {
+  clientId: '917137353724-ftng1fau0pm0hdl65l1i5et8fmssvedj.apps.googleusercontent.com',
+  redirectUri: 'https://decisionmaker.shrawantravels.com/api/auth/google/callback',
+  hasClientSecret: true
+}
+Received Google Calendar tokens: {
+  hasAccessToken: true,
+  hasRefreshToken: true,
+  expiryDate: 1755579280438
+}
+Google Calendar tokens stored successfully for user: 68a3f52d1438d4ddc172ebf6
+Connected to MongoDB Atlas successfully
+DM 68a3f52d1438d4ddc172ebf6 connected calendar - checking credit allocation for sales rep 68a3f49d1438d4ddc172ebdf
+Connected to MongoDB Atlas successfully
+Connected to MongoDB Atlas successfully
+User 68a3f49d1438d4ddc172ebdf (2025-08) with basic plan gets 5 monthly calls
+Error getting monthly call limit: Error: MonthlyCallLimit validation failed: userRole: `2025-08` is not a valid enum value for path `userRole`.
+    at ValidationError.inspect (/opt/render/project/src/node_modules/mongoose/lib/error/validation.js:52:26)
+    at formatValue (node:internal/util/inspect:877:19)
+    at inspect (node:internal/util/inspect:404:10)
+    at formatWithOptionsInternal (node:internal/util/inspect:2402:40)
+    at formatWithOptions (node:internal/util/inspect:2264:10)
+    at console.value (node:internal/console/constructor:345:14)
+    at console.error (node:internal/console/constructor:412:61)
+    at SimpleMongoDBStorage.getMonthlyCallLimit (file:///opt/render/project/src/dist/index.js:3059:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/dist/index.js:5155:32 {
+  errors: {
+    userRole: ValidatorError: `2025-08` is not a valid enum value for path `userRole`.
+        at validate (/opt/render/project/src/node_modules/mongoose/lib/schemaType.js:1404:13)
+        at SchemaType.doValidate (/opt/render/project/src/node_modules/mongoose/lib/schemaType.js:1388:7)
+        at /opt/render/project/src/node_modules/mongoose/lib/document.js:3105:18
+        at process.processTicksAndRejections (node:internal/process/task_queues:85:11) {
+      properties: [Object],
+      kind: 'enum',
+      path: 'userRole',
+      value: '2025-08',
+      reason: undefined,
+      [Symbol(mongoose#validatorError)]: true
+    }
+  },
+  _message: 'MonthlyCallLimit validation failed'
+}
+✅ Sales rep 68a3f49d1438d4ddc172ebdf call limits refreshed after DM calendar connection
+3:54:42 AM [express] GET /api/auth/google/callback 302 in 1560ms
+Token verified successfully for user: 68a3f52d1438d4ddc172ebf6
+Current user check - User ID: 68a3f52d1438d4ddc172ebf6 Email: mlp.yashkumar@gmail.com
