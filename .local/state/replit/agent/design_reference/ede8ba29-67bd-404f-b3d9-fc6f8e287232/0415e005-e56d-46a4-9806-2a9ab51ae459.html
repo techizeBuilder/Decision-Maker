@@ -1,0 +1,706 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naeberly - Warm Intros to Decision-Makers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'naeberly-purple': '#8B5CF6',
+                        'naeberly-green': '#10B981',
+                        'naeberly-blue': '#3B82F6',
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="font-inter bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-naeberly-purple to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-handshake text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">Naeberly</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <button onclick="showPage('landing')" class="text-gray-600 hover:text-naeberly-purple transition-colors">Home</button>
+                    <button onclick="showPage('sales-dashboard')" class="text-gray-600 hover:text-naeberly-purple transition-colors">Sales Dashboard</button>
+                    <button onclick="showPage('decision-dashboard')" class="text-gray-600 hover:text-naeberly-purple transition-colors">Decision Maker</button>
+                    <button class="bg-naeberly-purple text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landing Page -->
+    <div id="landing-page" class="page-content">
+        <!-- Hero Section -->
+        <section class="py-20 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                    <span class="text-naeberly-purple">Warm Intros</span><br>
+                    to Decision-Makers
+                </h1>
+                <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    Connect sales reps with verified executives through a community-driven platform. Contribute decision-makers, earn credits, book quality intro calls.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="showPage('sales-dashboard')" class="bg-naeberly-purple text-white px-8 py-4 rounded-xl font-semibold hover:bg-purple-600 transition-all transform hover:scale-105 shadow-lg">
+                        I'm a Sales Rep →
+                    </button>
+                    <button onclick="showPage('decision-dashboard')" class="bg-white text-naeberly-purple px-8 py-4 rounded-xl font-semibold border-2 border-naeberly-purple hover:bg-purple-50 transition-all">
+                        I'm a Decision Maker ✓
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How Naeberly Works -->
+        <section class="py-20 px-4 bg-white">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">How Naeberly Works</h2>
+                    <p class="text-xl text-gray-600">A contribution-based community where quality connections drive mutual success</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Cards -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-user-check text-naeberly-purple text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Verified Decision-Makers</h3>
+                        <p class="text-gray-600 leading-relaxed">Access a growing database of verified executives and decision-makers</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-calendar-alt text-naeberly-blue text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Smart Scheduling</h3>
+                        <p class="text-gray-600 leading-relaxed">Automated 15-minute intro calls with integrated calendar booking</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-chart-line text-naeberly-green text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">AI-Powered Insights</h3>
+                        <p class="text-gray-600 leading-relaxed">Custom call preparation and performance analysis for better outcomes</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-shield-alt text-indigo-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Quality Assurance</h3>
+                        <p class="text-gray-600 leading-relaxed">Traffic light validation system ensures top-quality experiences</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-envelope text-yellow-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Email Access</h3>
+                        <p class="text-gray-600 leading-relaxed">Premium access to decision-maker email addresses with approval</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-users text-naeberly-purple text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Pro Teams</h3>
+                        <p class="text-gray-600 leading-relaxed">Enterprise solutions for entire sales teams with advanced guides</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="py-20 px-4 bg-gradient-to-br from-purple-50 to-blue-50">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
+                    <p class="text-xl text-gray-600">Flexible options for individuals and teams</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <!-- Basic Plan -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                        <div class="text-center mb-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Basic</h3>
+                            <div class="text-4xl font-bold text-naeberly-purple mb-4">Free</div>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Invite 3 decision-makers
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Access to calls only
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Basic analytics
+                            </li>
+                        </ul>
+                        <button class="w-full bg-gray-900 text-white py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors">
+                            Get Started
+                        </button>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div class="bg-white rounded-2xl p-8 shadow-xl border-2 border-naeberly-purple relative">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                            <span class="bg-naeberly-purple text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+                        </div>
+                        <div class="text-center mb-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
+                            <div class="text-4xl font-bold text-naeberly-purple mb-1">$29</div>
+                            <div class="text-gray-500">/month</div>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Everything in Basic
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Access to email addresses
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                50 emails per month
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Advanced analytics
+                            </li>
+                        </ul>
+                        <button class="w-full bg-naeberly-purple text-white py-3 rounded-xl font-semibold hover:bg-purple-600 transition-colors">
+                            Upgrade to Premium
+                        </button>
+                    </div>
+
+                    <!-- Pro Team Plan -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                        <div class="text-center mb-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Pro Team</h3>
+                            <div class="text-4xl font-bold text-naeberly-blue mb-1">$99</div>
+                            <div class="text-gray-500">/month</div>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Everything in Premium
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Up to 10 team members
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                5 calls per rep/month
+                            </li>
+                            <li class="flex items-center text-gray-600">
+                                <i class="fas fa-check text-naeberly-green mr-3"></i>
+                                Team analytics dashboard
+                            </li>
+                        </ul>
+                        <button class="w-full bg-naeberly-blue text-white py-3 rounded-xl font-semibold hover:bg-blue-600 transition-colors">
+                            Contact Sales
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 px-4 bg-gradient-to-r from-naeberly-purple to-purple-600">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold text-white mb-6">Ready to Start Connecting?</h2>
+                <p class="text-xl text-purple-100 mb-10">Join the community of sales professionals and decision-makers building meaningful business relationships</p>
+                <button onclick="showPage('sales-dashboard')" class="bg-white text-naeberly-purple px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
+                    Get Started as Sales Rep
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Sales Rep Dashboard -->
+    <div id="sales-dashboard" class="page-content hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Dashboard Header -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Sales Rep Dashboard</h1>
+                        <p class="text-gray-600 mt-1">Welcome back, John!</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Free • 1 DM/month</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">Good Standing</span>
+                        <button class="text-gray-600 hover:text-gray-900"><i class="fas fa-chart-bar"></i> Analytics</button>
+                        <button class="text-gray-600 hover:text-gray-900"><i class="fas fa-user-circle"></i> Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm font-medium">Call Credits</p>
+                            <p class="text-3xl font-bold">0</p>
+                            <p class="text-purple-100 text-xs">this month</p>
+                        </div>
+                        <i class="fas fa-phone text-purple-200 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm font-medium">DM SMS</p>
+                            <p class="text-3xl font-bold">1/1</p>
+                        </div>
+                        <i class="fas fa-users text-green-200 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Upcoming Calls</p>
+                            <p class="text-3xl font-bold text-gray-900">1</p>
+                        </div>
+                        <i class="fas fa-calendar text-gray-400 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">DM Invitations</p>
+                            <p class="text-3xl font-bold text-gray-900">1/3</p>
+                        </div>
+                        <i class="fas fa-plus text-gray-400 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Success Rate</p>
+                            <p class="text-3xl font-bold text-gray-900">-</p>
+                        </div>
+                        <i class="fas fa-chart-line text-gray-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Database Access Section -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-lock text-purple-500 text-xl mr-3"></i>
+                            <h2 class="text-xl font-bold text-gray-900">Database Access Locked</h2>
+                        </div>
+
+                        <div class="text-center py-12">
+                            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-lock text-gray-400 text-3xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Waiting for DM Acceptance</h3>
+                            <p class="text-gray-600 mb-8">At least one of your invited decision makers must accept to unlock the database.</p>
+
+                            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                                <h4 class="font-semibold text-gray-900 mb-4">Invitation Status:</h4>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                <span class="text-purple-600 font-semibold text-sm">SC</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900">Sarah Chen</p>
+                                                <p class="text-sm text-gray-500">sarah@techcorp.com</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">Pending</span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                                <span class="text-green-600 font-semibold text-sm">MR</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900">Michael Rodriguez</p>
+                                                <p class="text-sm text-gray-500">michael@leadflow.com</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Accepted</span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <span class="text-blue-600 font-semibold text-sm">JW</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900">Jennifer Walsh</p>
+                                                <p class="text-sm text-gray-500">jennifer@cloudscale.com</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">Pending</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="bg-naeberly-purple text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-600 transition-colors">
+                                Simulate DM Acceptance (Demo)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Upcoming Calls -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-calendar-alt text-blue-500 mr-3"></i>
+                            <h3 class="font-bold text-gray-900">Upcoming Calls</h3>
+                        </div>
+                        <div class="text-center py-8">
+                            <i class="fas fa-calendar-plus text-gray-300 text-3xl mb-4"></i>
+                            <p class="text-gray-500">No calls scheduled yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decision Maker Dashboard -->
+    <div id="decision-dashboard" class="page-content hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Dashboard Header -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Decision Maker Dashboard</h1>
+                        <p class="text-gray-600 mt-1">Welcome back, Sarah!</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">Excellent Standing</span>
+                        <button class="text-gray-600 hover:text-gray-900"><i class="fas fa-cog"></i> Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm font-medium">Calls Completed</p>
+                            <p class="text-3xl font-bold">1</p>
+                        </div>
+                        <i class="fas fa-check-circle text-purple-200 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Remaining Calls</p>
+                            <p class="text-3xl font-bold text-gray-900">2</p>
+                        </div>
+                        <i class="fas fa-calendar text-gray-400 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Avg Call Rating</p>
+                            <p class="text-3xl font-bold text-gray-900">4.8</p>
+                        </div>
+                        <i class="fas fa-star text-yellow-400 text-2xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-medium">Quality Score</p>
+                            <p class="text-3xl font-bold text-gray-900">95%</p>
+                        </div>
+                        <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Main Content -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Upcoming Calls -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200">
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-alt text-blue-500 text-xl mr-3"></i>
+                                <h2 class="text-xl font-bold text-gray-900">Upcoming Calls</h2>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-6">
+                            <!-- Call 1 -->
+                            <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">Alex Johnson</h3>
+                                        <p class="text-blue-600 font-medium">SalesForce Pro</p>
+                                        <p class="text-sm text-gray-600">CRM Software</p>
+                                        <p class="text-sm text-blue-600 font-medium italic">"AI-powered CRM that increases sales productivity by 40%"</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-blue-600">Today, 3:00 PM</p>
+                                    <p class="text-sm text-gray-500">15 min</p>
+                                    <div class="mt-2 space-x-2">
+                                        <button class="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm hover:bg-gray-200">Reschedule</button>
+                                        <button class="bg-blue-100 text-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-200">View Rep Profile</button>
+                                        <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Join Call</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Call 2 -->
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">Maria Garcia</h3>
+                                        <p class="text-purple-600 font-medium">CloudTech Solutions</p>
+                                        <p class="text-sm text-gray-600">Cloud Infrastructure</p>
+                                        <p class="text-sm text-purple-600 font-medium italic">"Scalable cloud solutions for enterprise growth"</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-gray-900">Tomorrow, 11:00 AM</p>
+                                    <p class="text-sm text-gray-500">15 min</p>
+                                    <div class="mt-2 space-x-2">
+                                        <button class="bg-gray-100 text-gray-600 px-3 py-1 rounded text-sm hover:bg-gray-200">Reschedule</button>
+                                        <button class="bg-purple-100 text-purple-600 px-3 py-1 rounded text-sm hover:bg-purple-200">View Rep Profile</button>
+                                        <button class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700">Join Call</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Calls -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200">
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <i class="fas fa-history text-green-500 text-xl mr-3"></i>
+                                <h2 class="text-xl font-bold text-gray-900">Recent Calls</h2>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">David Thompson</h3>
+                                        <p class="text-green-600 font-medium">MarketingAI</p>
+                                        <p class="text-sm text-gray-600">Marketing Automation</p>
+                                        <p class="text-sm text-green-600 font-medium italic">"Great presentation, relevant to our needs"</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium text-gray-900">Yesterday</p>
+                                    <div class="flex items-center mt-1">
+                                        <div class="flex text-yellow-400">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium mt-2 inline-block">Interested</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Commitment Status -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-users text-purple-500 mr-3"></i>
+                            <h3 class="font-bold text-gray-900">Commitment Status</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-gray-600">Calls Completed</span>
+                                    <span class="text-sm font-bold text-gray-900">1/3</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 33%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-gray-600">Remaining</span>
+                                    <span class="text-sm font-bold text-gray-900">2/3</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-naeberly-purple h-2 rounded-full" style="width: 67%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-calendar text-blue-500 mr-3"></i>
+                            <h3 class="font-bold text-gray-900">Calendar</h3>
+                        </div>
+                        <div class="flex items-center text-green-600 mb-4">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span class="text-sm font-medium">Google Calendar Connected</span>
+                        </div>
+                        <button class="w-full bg-gray-50 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-cog mr-2"></i>
+                            Manage Availability
+                        </button>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                        <h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
+                        <div class="space-y-3">
+                            <button class="w-full flex items-center text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="fas fa-star text-yellow-500 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-700">Rate Last Call</span>
+                            </button>
+                            <button class="w-full flex items-center text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-700">Report Issue</span>
+                            </button>
+                            <button class="w-full flex items-center text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                <i class="fas fa-comment text-blue-500 mr-3"></i>
+                                <span class="text-sm font-medium text-gray-700">View Feedback</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Page navigation
+            function showPage(pageId) {
+                const pages = document.querySelectorAll('.page-content');
+                pages.forEach(page => page.classList.add('hidden'));
+                
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.remove('hidden');
+                }
+            }
+
+            // Make showPage globally available
+            window.showPage = showPage;
+
+            // Initialize with landing page
+            showPage('landing-page');
+
+            // Add smooth scrolling for internal links
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('a[href^="#"]')) {
+                    e.preventDefault();
+                    const target = document.querySelector(e.target.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+
+            // Add loading states to buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('button') && !e.target.matches('[onclick*="showPage"]')) {
+                    const button = e.target;
+                    const originalText = button.textContent;
+                    
+                    button.disabled = true;
+                    button.textContent = 'Loading...';
+                    
+                    setTimeout(() => {
+                        button.disabled = false;
+                        button.textContent = originalText;
+                    }, 1500);
+                }
+            });
+
+            // Add hover effects to metric cards
+            const metricCards = document.querySelectorAll('.bg-gradient-to-r');
+            metricCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Simulate real-time updates for dashboard
+            function updateDashboardMetrics() {
+                const timeElements = document.querySelectorAll('[data-time]');
+                timeElements.forEach(element => {
+                    const now = new Date();
+                    element.textContent = now.toLocaleTimeString();
+                });
+            }
+
+            // Update every minute
+            setInterval(updateDashboardMetrics, 60000);
+        })();
+    </script>
+</body>
+</html>
