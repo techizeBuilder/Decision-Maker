@@ -66,7 +66,6 @@ This error means Google is rejecting our client credentials during token exchang
 4. User not added to test users
 
 ## OUR APPLICATION IS CORRECTLY CONFIGURED
-- Client Secret: `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`
 - Redirect URI: `https://decisionmaker.shrawantravels.com/api/auth/google/callback`
 
 The issue is 100% in Google Cloud Console configuration. Please follow the steps above exactly.
