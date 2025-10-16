@@ -1156,6 +1156,112 @@ export const sendPostCallFeedbackToRep = async (
   }
 };
 
+// Work email verification for decision makers
+export const sendWorkEmailVerification = async (
+  recipientEmail: string,
+  verificationCode: string,
+) => {
+  const mailOptions = {
+    from: '"Naeberly Platform" <noreply@naeberly.com>',
+    to: recipientEmail,
+    subject: "Verify your work email - Naeberly",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+          .verification-code { 
+            font-size: 36px; 
+            font-weight: bold; 
+            text-align: center; 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 10px; 
+            letter-spacing: 4px; 
+            color: #2d3748; 
+            margin: 20px 0; 
+            border: 2px dashed #667eea;
+          }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 14px; }
+          .warning { background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🔐 Email Verification</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9;">Verify your work email to complete registration</p>
+          </div>
+
+          <div class="content">
+            <h2>Hello there!</h2>
+
+            <p>Thank you for signing up for Naeberly! To complete your registration and verify your work email address, please use the following verification code:</p>
+
+            <div class="verification-code">
+              ${verificationCode}
+            </div>
+
+            <p>Enter this code in your registration form to continue with your account setup.</p>
+
+            <div class="warning">
+              <strong>⏰ Important:</strong> This verification code will expire in 15 minutes for security reasons.
+            </div>
+
+            <p><strong>Why verify your email?</strong></p>
+            <ul>
+              <li>Confirms your identity and company affiliation</li>
+              <li>Ensures you receive important platform notifications</li>
+              <li>Helps maintain the quality and security of our network</li>
+            </ul>
+
+            <p>If you didn't request this verification, please ignore this email or contact our support team.</p>
+
+            <p style="margin-top: 30px;">Best regards,<br>The Naeberly Team</p>
+          </div>
+
+          <div class="footer">
+            <p>© 2025 Naeberly Platform. All rights reserved.</p>
+            <p>This email was sent to ${recipientEmail}</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+    text: `
+      Naeberly Email Verification
+
+      Hello there!
+
+      Thank you for signing up for Naeberly! To complete your registration and verify your work email address, please use the following verification code:
+
+      Verification Code: ${verificationCode}
+
+      Enter this code in your registration form to continue with your account setup.
+
+      Important: This verification code will expire in 15 minutes for security reasons.
+
+      If you didn't request this verification, please ignore this email or contact our support team.
+
+      Best regards,
+      The Naeberly Team
+    `,
+  };
+
+  try {
+    const info = await getTransporter().sendMail(mailOptions);
+    console.log("Work email verification sent successfully:", info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error: any) {
+    console.error("❌ Error sending work email verification to:", recipientEmail, error);
+    return { success: false, error: error.message || "Failed to send email" };
+  }
+};
+
 // Test email function
 export const testEmailConnection = async () => {
   try {
@@ -1164,6 +1270,228 @@ export const testEmailConnection = async () => {
     return { success: true, message: "Email service connection verified" };
   } catch (error) {
     console.error("Email service verification failed:", error);
+    throw error;
+  }
+};
+
+// Send manual verification approval email
+export const sendManualVerificationApprovalEmail = async (
+  recipientEmail: string,
+  recipientName: string,
+  userRole: "sales_rep" | "decision_maker",
+  reviewNotes?: string,
+) => {
+  const dashboardUrl = `${process.env.REPLIT_DOMAIN || "http://decisionmaker.shrawantravels.com"}/dashboard`;
+  const roleDisplayName = userRole === "sales_rep" ? "Sales Representative" : "Decision Maker";
+
+  const mailOptions = {
+    from: '"Naeberly Platform" <noreply@naeberly.com>',
+    to: recipientEmail,
+    subject: `✅ Your Naeberly Account Has Been Approved!`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Account Approved - Naeberly</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+          .container { max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; margin: -20px -20px 20px -20px; }
+          .header h1 { margin: 0; font-size: 28px; }
+          .header .icon { font-size: 48px; margin-bottom: 10px; }
+          .content { padding: 20px 0; }
+          .content h2 { color: #333; margin-bottom: 20px; }
+          .content p { color: #666; margin-bottom: 15px; }
+          .success-box { background-color: #d1fae5; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #10b981; }
+          .success-box h3 { color: #065f46; margin: 0 0 10px 0; }
+          .success-box p { color: #047857; margin: 0; }
+          .cta-button { display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+          .cta-button:hover { opacity: 0.9; }
+          .notes-section { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+          .next-steps { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+          .next-steps ol { margin: 0; padding-left: 20px; }
+          .next-steps li { margin-bottom: 10px; color: #555; }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="icon">✅</div>
+            <h1>Account Approved!</h1>
+            <p style="margin: 0; opacity: 0.9;">Your Naeberly account has been verified and approved</p>
+          </div>
+          
+          <div class="content">
+            <h2>Congratulations, ${recipientName}!</h2>
+            
+            <div class="success-box">
+              <h3>🎉 Your ${roleDisplayName} account is now active!</h3>
+              <p>Our admin team has reviewed and approved your account. You now have full access to the Naeberly platform.</p>
+            </div>
+            
+            <p>Your account has been manually verified and you can now enjoy all the features available to verified ${roleDisplayName.toLowerCase()}s on our platform.</p>
+            
+            ${reviewNotes ? `
+            <div class="notes-section">
+              <h3>Admin Notes:</h3>
+              <p><em>"${reviewNotes}"</em></p>
+            </div>
+            ` : ''}
+            
+            <div class="next-steps">
+              <h3>What's Next?</h3>
+              <ol>
+                <li>Access your dashboard using the button below</li>
+                <li>${userRole === "sales_rep" ? "Start inviting decision makers to join your network" : "Begin scheduling calls with sales representatives"}</li>
+                <li>Complete your profile to maximize your success</li>
+                <li>Explore all available features and tools</li>
+              </ol>
+            </div>
+            
+            <div style="text-align: center;">
+              <a href="${dashboardUrl}" class="cta-button">Access Your Dashboard</a>
+            </div>
+            
+            <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+            
+            <p>Welcome to the Naeberly community!</p>
+          </div>
+          
+          <div class="footer">
+            <p>© 2024 Naeberly Platform. All rights reserved.</p>
+            <p>This email was sent automatically. Please do not reply to this email.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    const transporter = getTransporter();
+    await transporter.sendMail(mailOptions);
+    console.log("✅ Manual verification approval email sent to:", recipientEmail);
+  } catch (error) {
+    console.error("❌ Failed to send manual verification approval email:", error);
+    throw error;
+  }
+};
+
+// Send manual verification rejection email
+export const sendManualVerificationRejectionEmail = async (
+  recipientEmail: string,
+  recipientName: string,
+  userRole: "sales_rep" | "decision_maker",
+  reviewNotes?: string,
+) => {
+  const contactUrl = `${process.env.REPLIT_DOMAIN || "http://decisionmaker.shrawantravels.com"}/contact`;
+  const roleDisplayName = userRole === "sales_rep" ? "Sales Representative" : "Decision Maker";
+
+  const mailOptions = {
+    from: '"Naeberly Platform" <noreply@naeberly.com>',
+    to: recipientEmail,
+    subject: `❌ Update on Your Naeberly Account Verification`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Account Verification Update - Naeberly</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+          .container { max-width: 600px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+          .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; margin: -20px -20px 20px -20px; }
+          .header h1 { margin: 0; font-size: 28px; }
+          .header .icon { font-size: 48px; margin-bottom: 10px; }
+          .content { padding: 20px 0; }
+          .content h2 { color: #333; margin-bottom: 20px; }
+          .content p { color: #666; margin-bottom: 15px; }
+          .warning-box { background-color: #fef2f2; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ef4444; }
+          .warning-box h3 { color: #991b1b; margin: 0 0 10px 0; }
+          .warning-box p { color: #dc2626; margin: 0; }
+          .info-box { background-color: #eff6ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+          .info-box h3 { color: #1e40af; margin: 0 0 10px 0; }
+          .info-box p { color: #1d4ed8; margin: 0; }
+          .cta-button { display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+          .cta-button:hover { opacity: 0.9; }
+          .notes-section { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+          .next-steps { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; }
+          .next-steps ol { margin: 0; padding-left: 20px; }
+          .next-steps li { margin-bottom: 10px; color: #555; }
+          .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="icon">⚠️</div>
+            <h1>Verification Update</h1>
+            <p style="margin: 0; opacity: 0.9;">Important information about your account</p>
+          </div>
+          
+          <div class="content">
+            <h2>Hello ${recipientName},</h2>
+            
+            <div class="warning-box">
+              <h3>Account Verification Status</h3>
+              <p>Unfortunately, we were unable to approve your ${roleDisplayName} account at this time.</p>
+            </div>
+            
+            <p>Our admin team has carefully reviewed your account application, and we need to address some concerns before we can proceed with verification.</p>
+            
+            ${reviewNotes ? `
+            <div class="notes-section">
+              <h3>Admin Feedback:</h3>
+              <p><strong>"${reviewNotes}"</strong></p>
+            </div>
+            ` : ''}
+            
+            <div class="info-box">
+              <h3>What This Means</h3>
+              <p>Your account access may be limited until verification requirements are met. We encourage you to reach out to resolve any issues.</p>
+            </div>
+            
+            <div class="next-steps">
+              <h3>Next Steps:</h3>
+              <ol>
+                <li>Review the admin feedback above (if provided)</li>
+                <li>Contact our support team for clarification</li>
+                <li>Provide any additional documentation if requested</li>
+                <li>Resubmit your application if necessary</li>
+              </ol>
+            </div>
+            
+            <div style="text-align: center;">
+              <a href="${contactUrl}" class="cta-button">Contact Support</a>
+            </div>
+            
+            <p>We understand this may be disappointing, but our verification process helps maintain the quality and security of our platform for all users.</p>
+            
+            <p>If you believe this decision was made in error or if you have additional information to provide, please don't hesitate to contact our support team.</p>
+            
+            <p>Thank you for your understanding.</p>
+          </div>
+          
+          <div class="footer">
+            <p>© 2024 Naeberly Platform. All rights reserved.</p>
+            <p>This email was sent automatically. Please do not reply to this email.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    const transporter = getTransporter();
+    await transporter.sendMail(mailOptions);
+    console.log("✅ Manual verification rejection email sent to:", recipientEmail);
+  } catch (error) {
+    console.error("❌ Failed to send manual verification rejection email:", error);
     throw error;
   }
 };

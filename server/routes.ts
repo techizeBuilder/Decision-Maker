@@ -819,12 +819,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Sales Rep Signup API Routes
 
-  // LinkedIn verification endpoint
+  // LinkedIn verification endpoint with name matching
   app.post("/api/verify-linkedin", async (req, res) => {
     try {
-      const { linkedinUrl } = req.body;
+      const { linkedinUrl, firstName, lastName } = req.body;
 
-      console.log("LinkedIn verification request:", { linkedinUrl });
+      console.log("LinkedIn verification request:", { linkedinUrl, firstName, lastName });
 
       if (!linkedinUrl) {
         return res.status(400).json({
@@ -871,12 +871,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Name matching logic if firstName and lastName are provided
+      let nameMatches = false;
+      if (firstName && lastName) {
+        const profileId = profileMatch[1].toLowerCase();
+        const normalizedFirstName = firstName.toLowerCase().replace(/[^a-z]/g, '');
+        const normalizedLastName = lastName.toLowerCase().replace(/[^a-z]/g, '');
+        
+        // Simple exact matching logic
+        const hasFirstName = profileId.includes(normalizedFirstName);
+        const hasLastName = profileId.includes(normalizedLastName);
+        
+        // Both names must be present for a match
+        nameMatches = hasFirstName && hasLastName;
+
+        console.log("Name matching results:", {
+          profileId,
+          normalizedFirstName,
+          normalizedLastName,
+          hasFirstName,
+          hasLastName,
+          nameMatches
+        });
+      }
+
       console.log("LinkedIn verification successful for:", profileMatch[1]);
 
       // Verification successful
       res.json({
         verified: true,
-        message: "LinkedIn profile verified successfully",
+        nameMatches: nameMatches,
+        message: nameMatches 
+          ? "LinkedIn profile verified and name matches!"
+          : "LinkedIn profile verified but name doesn't match",
         profileId: profileMatch[1],
       });
     } catch (error) {
@@ -891,9 +918,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Save personal information
   app.post("/api/sales-rep/personal-info", async (req, res) => {
     try {
-      console.log("Received signup request:", req.body);
+      console.log("Received sales rep signup request:", req.body);
       const validatedData = salesRepPersonalInfoSchema.parse(req.body);
-      console.log("Validated data:", validatedData);
+      console.log("Validated sales rep data:", validatedData);
 
       // Check if email already exists
       const existingUser = await storage.getUserByEmail(validatedData.email);
@@ -907,7 +934,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash password
       const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-      // Save user data temporarily in session or create incomplete user record
+      // Determine verification status based on LinkedIn name matching
+      const linkedinNameMatches = req.body.linkedinNameMatches || false;
+      let verificationStatus = "unverified";
+      let verifiedVia = null;
+
+      if (req.body.linkedinVerified && linkedinNameMatches) {
+        // Condition 1: LinkedIn name matches - automatically verified
+        verificationStatus = "verified";
+        verifiedVia = "linkedin";
+        console.log("Sales rep automatically verified via LinkedIn name match");
+      }
+
+      // Save user data
       const userData = {
         email: validatedData.email,
         password: hashedPassword,
@@ -917,13 +956,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         linkedinUrl: validatedData.linkedinUrl,
         linkedinVerified: req.body.linkedinVerified || false,
         companyDomain: validatedData.companyDomain,
-        calendarIntegrationEnabled: false, // Default: calendar disconnected for new DMs
+        calendarIntegrationEnabled: false, // Default: calendar disconnected for new sales reps
         isActive: false, // Mark as inactive until signup is complete
+        verification_status: verificationStatus,
+        verified_via: verifiedVia,
+        // Keep backward compatibility with existing email verification
+        emailVerified: verificationStatus === "verified",
       };
 
-      console.log("Creating user with data:", userData);
+      console.log("Creating sales rep with data:", userData);
       const user = await storage.createUser(userData);
-      console.log("User created successfully:", user.id);
+      console.log("Sales rep created successfully:", user.id);
+
+      // Add to manual verification queue if not automatically verified
+      if (verificationStatus === "unverified") {
+        try {
+          const { connectToMongoDB, ManualVerification } = await import("./mongodb");
+          await connectToMongoDB();
+
+          await ManualVerification.create({
+            userId: user.id,
+            userRole: "sales_rep",
+            userEmail: user.email,
+            firstName: validatedData.firstName,
+            lastName: validatedData.lastName,
+            linkedinUrl: validatedData.linkedinUrl,
+            companyDomain: validatedData.companyDomain,
+            reason: "LinkedIn name doesn't match entered name",
+            submittedAt: new Date(),
+            status: "pending"
+          });
+
+          console.log("Sales rep added to manual verification queue:", user.id);
+        } catch (verificationError) {
+          console.error("Error adding sales rep to manual verification queue:", verificationError);
+          // Don't fail the signup, just log the error
+        }
+      }
 
       // Store user ID in session for multi-step process
       (req.session as any).signupUserId = user.id;
@@ -932,9 +1001,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         message: "Personal information saved",
         userId: user.id,
+        verificationStatus: verificationStatus,
+        needsEmailVerification: !linkedinNameMatches, // If LinkedIn name doesn't match, email verification will be needed
       });
     } catch (error: any) {
-      console.error("Signup error:", error);
+      console.error("Sales rep signup error:", error);
       if (error.name === "ZodError") {
         return res
           .status(400)
@@ -1323,11 +1394,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Update user to mark email as verified
-      await storage.updateUser(user.id, {
+      const updateData: any = {
         emailVerified: true,
         emailVerificationToken: null,
         emailVerificationTokenExpiry: null,
-      });
+      };
+
+      // If this is a decision maker and they were unverified, update verification status
+      if (user.role === "decision_maker" && user.verification_status === "unverified") {
+        updateData.verification_status = "verified";
+        updateData.verified_via = "domain";
+        
+        // Remove from manual verification queue if present
+        try {
+          const { connectToMongoDB, ManualVerification } = await import("./mongodb");
+          await connectToMongoDB();
+          await ManualVerification.deleteOne({ userId: user.id });
+          console.log(`Removed user ${user.id} from manual verification queue after email verification`);
+        } catch (error) {
+          console.error("Error removing from manual verification queue:", error);
+        }
+      }
+
+      await storage.updateUser(user.id, updateData);
 
       res.json({
         success: true,
@@ -1933,6 +2022,175 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(500).json({ message: "Failed to get activity logs" });
       }
     },
+  );
+
+  // Manual Verification Management Routes
+  app.get(
+    "/api/super-admin/manual-verification",
+    requireSuperAdmin,
+    async (req, res) => {
+      try {
+        const { connectToMongoDB, ManualVerification } = await import("./mongodb");
+        await connectToMongoDB();
+
+        const pendingVerifications = await ManualVerification.find({ status: "pending" })
+          .populate('userId', 'firstName lastName email linkedinUrl companyDomain')
+          .sort({ createdAt: -1 });
+
+        res.json({
+          success: true,
+          verifications: pendingVerifications,
+        });
+      } catch (error) {
+        console.error("Error getting manual verifications:", error);
+        res.status(500).json({ message: "Failed to get manual verifications" });
+      }
+    }
+  );
+
+  app.post(
+    "/api/super-admin/manual-verification/:id/approve",
+    requireSuperAdmin,
+    async (req, res) => {
+      try {
+        const { id } = req.params;
+        const { notes } = req.body;
+
+        const { connectToMongoDB, ManualVerification } = await import("./mongodb");
+        await connectToMongoDB();
+
+        // Update manual verification record
+        const verification = await ManualVerification.findByIdAndUpdate(
+          id,
+          {
+            status: "approved",
+            reviewedBy: req.user!.userId,
+            reviewedAt: new Date(),
+            reviewNotes: notes || "Approved by super admin"
+          },
+          { new: true }
+        );
+
+        if (!verification) {
+          return res.status(404).json({ message: "Verification record not found" });
+        }
+
+        // Update user verification status
+        await storage.updateUser(verification.userId.toString(), {
+          verification_status: "verified",
+          verified_via: "manual",
+        });
+
+        // Get user details for email
+        const user = await storage.getUser(verification.userId.toString());
+        
+        // Send approval email notification
+        if (user && user.email) {
+          try {
+            const { sendManualVerificationApprovalEmail } = await import("./email-service");
+            await sendManualVerificationApprovalEmail(
+              user.email,
+              `${user.firstName} ${user.lastName}`,
+              user.role as "sales_rep" | "decision_maker",
+              notes
+            );
+            console.log(`✅ Approval email sent to: ${user.email}`);
+          } catch (emailError) {
+            console.error("❌ Failed to send approval email:", emailError);
+            // Don't fail the entire operation if email fails
+          }
+        }
+
+        // Log activity
+        await storage.createActivityLog({
+          userId: req.user!.userId,
+          action: "APPROVE_MANUAL_VERIFICATION",
+          entityType: "user",
+          entityId: verification.userId.toString(),
+          details: `Manually approved verification for user: ${verification.userEmail}`,
+          ipAddress: req.ip,
+          userAgent: req.get("User-Agent"),
+        });
+
+        res.json({
+          success: true,
+          message: "User verification approved successfully",
+        });
+      } catch (error) {
+        console.error("Error approving manual verification:", error);
+        res.status(500).json({ message: "Failed to approve verification" });
+      }
+    }
+  );
+
+  app.post(
+    "/api/super-admin/manual-verification/:id/reject",
+    requireSuperAdmin,
+    async (req, res) => {
+      try {
+        const { id } = req.params;
+        const { notes } = req.body;
+
+        const { connectToMongoDB, ManualVerification } = await import("./mongodb");
+        await connectToMongoDB();
+
+        // Update manual verification record
+        const verification = await ManualVerification.findByIdAndUpdate(
+          id,
+          {
+            status: "rejected",
+            reviewedBy: req.user!.userId,
+            reviewedAt: new Date(),
+            reviewNotes: notes || "Rejected by super admin"
+          },
+          { new: true }
+        );
+
+        if (!verification) {
+          return res.status(404).json({ message: "Verification record not found" });
+        }
+
+        // Optionally deactivate user account or send notification
+        // Get user details for email
+        const user = await storage.getUser(verification.userId.toString());
+        
+        // Send rejection email notification
+        if (user && user.email) {
+          try {
+            const { sendManualVerificationRejectionEmail } = await import("./email-service");
+            await sendManualVerificationRejectionEmail(
+              user.email,
+              `${user.firstName} ${user.lastName}`,
+              user.role as "sales_rep" | "decision_maker",
+              notes
+            );
+            console.log(`✅ Rejection email sent to: ${user.email}`);
+          } catch (emailError) {
+            console.error("❌ Failed to send rejection email:", emailError);
+            // Don't fail the entire operation if email fails
+          }
+        }
+        
+        // Log the rejection activity
+        await storage.createActivityLog({
+          userId: req.user!.userId,
+          action: "REJECT_MANUAL_VERIFICATION",
+          entityType: "user",
+          entityId: verification.userId.toString(),
+          details: `Rejected manual verification for user: ${verification.userEmail}. Reason: ${notes}`,
+          ipAddress: req.ip,
+          userAgent: req.get("User-Agent"),
+        });
+
+        res.json({
+          success: true,
+          message: "User verification rejected",
+        });
+      } catch (error) {
+        console.error("Error rejecting manual verification:", error);
+        res.status(500).json({ message: "Failed to reject verification" });
+      }
+    }
   );
 
   // Platform Settings Routes
@@ -5811,6 +6069,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash password
       const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
+      // Determine verification status based on LinkedIn name matching
+      const linkedinNameMatches = req.body.linkedinNameMatches || false;
+      let verificationStatus = "unverified";
+      let verifiedVia = null;
+
+      if (req.body.linkedinVerified && linkedinNameMatches) {
+        // Condition 1: LinkedIn name matches - automatically verified
+        verificationStatus = "verified";
+        verifiedVia = "linkedin";
+        console.log("User automatically verified via LinkedIn name match");
+      }
+
       // Save decision maker data
       const userData = {
         email: validatedData.email,
@@ -5823,6 +6093,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         companyDomain: validatedData.companyDomain,
         calendarIntegrationEnabled: false, // Default: calendar disconnected for new DMs
         isActive: false, // Mark as inactive until signup is complete
+        verification_status: verificationStatus,
+        verified_via: verifiedVia,
       };
 
       // Check for invitation context from frontend
@@ -5875,6 +6147,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         message: "Personal information saved",
         userId: user.id,
+        verificationStatus: verificationStatus,
+        needsEmailVerification: !linkedinNameMatches, // If LinkedIn name doesn't match, email verification will be needed
       });
     } catch (error: any) {
       console.error("Decision maker signup error:", error);
@@ -5885,6 +6159,194 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.status(500).json({
         message: "Failed to save personal information",
+        error: error.message,
+      });
+    }
+  });
+
+  // Send email verification for decision makers
+  app.post("/api/decision-maker/send-email-verification", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      // Get user ID from session
+      const userId = (req.session as any)?.signupUserId;
+      if (!userId) {
+        return res.status(400).json({ message: "No active signup session found" });
+      }
+
+      // Generate 6-digit verification code
+      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const verificationExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+      // Store verification code in user record
+      await storage.updateUser(userId, {
+        emailVerificationToken: verificationCode,
+        emailVerificationTokenExpiry: verificationExpiry,
+      });
+
+      // Send verification email
+      const { sendWorkEmailVerification } = await import("./email-service");
+      await sendWorkEmailVerification(email, verificationCode);
+
+      res.json({
+        success: true,
+        message: "Verification code sent to your email",
+      });
+    } catch (error: any) {
+      console.error("Error sending verification email:", error);
+      res.status(500).json({
+        message: "Failed to send verification email",
+        error: error.message,
+      });
+    }
+  });
+
+  // Verify email code for decision makers
+  app.post("/api/decision-maker/verify-email-code", async (req, res) => {
+    try {
+      const { code, email } = req.body;
+      
+      if (!code || !email) {
+        return res.status(400).json({ message: "Code and email are required" });
+      }
+
+      // Get user ID from session
+      const userId = (req.session as any)?.signupUserId;
+      if (!userId) {
+        return res.status(400).json({ message: "No active signup session found" });
+      }
+
+      // Get user and verify code
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if code matches and hasn't expired
+      if (
+        user.emailVerificationToken !== code ||
+        !user.emailVerificationTokenExpiry ||
+        new Date() > new Date(user.emailVerificationTokenExpiry)
+      ) {
+        return res.status(400).json({ message: "Invalid or expired verification code" });
+      }
+
+      // Update user as verified via domain
+      await storage.updateUser(userId, {
+        emailVerified: true,
+        verification_status: "verified",
+        verified_via: "domain",
+        emailVerificationToken: null,
+        emailVerificationTokenExpiry: null,
+      });
+
+      res.json({
+        success: true,
+        message: "Email verified successfully",
+      });
+    } catch (error: any) {
+      console.error("Error verifying email code:", error);
+      res.status(500).json({
+        message: "Failed to verify email code",
+        error: error.message,
+      });
+    }
+  });
+
+  // Send email verification for sales rep
+  app.post("/api/sales-rep/send-email-verification", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      // Get user ID from session
+      const userId = (req.session as any)?.signupUserId;
+      if (!userId) {
+        return res.status(400).json({ message: "No active signup session found" });
+      }
+
+      // Generate 6-digit verification code
+      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const verificationExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+      // Store verification code in user record
+      await storage.updateUser(userId, {
+        emailVerificationToken: verificationCode,
+        emailVerificationTokenExpiry: verificationExpiry,
+      });
+
+      // Send verification email
+      const { sendWorkEmailVerification } = await import("./email-service");
+      await sendWorkEmailVerification(email, verificationCode);
+
+      res.json({
+        success: true,
+        message: "Verification code sent to your email",
+      });
+    } catch (error: any) {
+      console.error("Error sending verification email:", error);
+      res.status(500).json({
+        message: "Failed to send verification email",
+        error: error.message,
+      });
+    }
+  });
+
+  // Verify email code for sales rep
+  app.post("/api/sales-rep/verify-email-code", async (req, res) => {
+    try {
+      const { code, email } = req.body;
+      
+      if (!code || !email) {
+        return res.status(400).json({ message: "Code and email are required" });
+      }
+
+      // Get user ID from session
+      const userId = (req.session as any)?.signupUserId;
+      if (!userId) {
+        return res.status(400).json({ message: "No active signup session found" });
+      }
+
+      // Get user and verify code
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if code matches and hasn't expired
+      if (
+        user.emailVerificationToken !== code ||
+        !user.emailVerificationTokenExpiry ||
+        new Date() > new Date(user.emailVerificationTokenExpiry)
+      ) {
+        return res.status(400).json({ message: "Invalid or expired verification code" });
+      }
+
+      // Update user as verified via domain
+      await storage.updateUser(userId, {
+        emailVerified: true,
+        verification_status: "verified",
+        verified_via: "domain",
+        emailVerificationToken: null,
+        emailVerificationTokenExpiry: null,
+      });
+
+      res.json({
+        success: true,
+        message: "Email verified successfully",
+      });
+    } catch (error: any) {
+      console.error("Error verifying email code:", error);
+      res.status(500).json({
+        message: "Failed to verify email code",
         error: error.message,
       });
     }
@@ -6014,10 +6476,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Complete registration by setting packageType to free and activating account
-      const updatedUser = await storage.updateUser(userId, {
+      // But check verification status first
+      const updateData: any = {
         packageType: "free", // All DMs get free plan by default
         isActive: true,
-      });
+      };
+
+      // If user is not verified, add to manual verification list
+      if (user.verification_status === "unverified") {
+        console.log(`User ${userId} completing signup without verification - adding to manual verification list`);
+        
+        // Import ManualVerification model
+        const { connectToMongoDB, ManualVerification } = await import("./mongodb");
+        await connectToMongoDB();
+
+        // Check if already in manual verification list
+        const existingEntry = await ManualVerification.findOne({ userId: userId });
+        if (!existingEntry) {
+          await ManualVerification.create({
+            userId: userId,
+            userEmail: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            linkedinUrl: user.linkedinUrl,
+            companyDomain: user.companyDomain,
+            linkedinVerificationFailed: !user.linkedinVerified,
+            emailVerificationFailed: !user.emailVerified,
+            status: "pending",
+          });
+          console.log(`Added user ${userId} to manual verification queue`);
+        }
+      }
+
+      const updatedUser = await storage.updateUser(userId, updateData);
 
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
@@ -6055,59 +6546,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .json({ message: "Validation failed", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to save nominations" });
-    }
-  });
-
-  // Complete decision maker professional information
-  app.post("/api/decision-maker/professional-info", async (req, res) => {
-    try {
-      const validatedData = z
-        .object({
-          jobTitle: z.string().min(1, "Job title is required"),
-          company: z.string().min(1, "Company is required"),
-          industry: z.string().min(1, "Industry is required"),
-          companySize: z.string().min(1, "Company size is required"),
-          yearsInRole: z.string().min(1, "Years in role is required"),
-        })
-        .parse(req.body);
-
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
-      if (!userId) {
-        return res
-          .status(400)
-          .json({ message: "Please complete previous steps first" });
-      }
-
-      // Update user with professional information
-      const updatedUser = await storage.updateUser(userId, {
-        professionalInfo: {
-          jobTitle: validatedData.jobTitle,
-          company: validatedData.company,
-          industry: validatedData.industry,
-          companySize: validatedData.companySize,
-          yearsInRole: validatedData.yearsInRole,
-        },
-      });
-
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      res.json({
-        success: true,
-        message: "Professional information saved successfully",
-        user: updatedUser,
-      });
-    } catch (error: any) {
-      if (error.name === "ZodError") {
-        return res
-          .status(400)
-          .json({ message: "Validation failed", errors: error.errors });
-      }
-      res
-        .status(500)
-        .json({ message: "Failed to save professional information" });
     }
   });
 
@@ -6275,11 +6713,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check email verification for sales reps
-      if (user.role === "sales_rep" && !user.emailVerified) {
-        console.log("User email not verified");
-        return res.status(401).json({ 
-          message: "Please verify your email address before logging in. Check your inbox for the verification link.",
-          emailVerificationRequired: true 
+      if (user.role === "sales_rep") {
+        // New verification system: Check verification_status first
+        if (user.verification_status === "unverified") {
+          console.log("Sales rep not verified - restricted access");
+          return res.status(403).json({
+            message: "Your account is pending verification. You will receive email notification once approved.",
+            needsVerification: true,
+            verificationStatus: "unverified"
+          });
+        }
+        
+        // Backward compatibility: Also check old emailVerified field for existing users
+        if (!user.emailVerified && (!user.verification_status || user.verification_status === "pending")) {
+          console.log("User email not verified");
+          return res.status(401).json({ 
+            message: "Please verify your email address before logging in. Check your inbox for the verification link.",
+            emailVerificationRequired: true 
+          });
+        }
+      }
+
+      // Check verification status for decision makers
+      if (user.role === "decision_maker" && user.verification_status === "unverified") {
+        console.log("Decision maker not verified - restricted access");
+        return res.status(403).json({
+          message: "Your account is pending verification. You will receive email notification once approved.",
+          needsVerification: true,
+          verificationStatus: "unverified"
         });
       }
 
@@ -9164,6 +9625,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Admin fix error:", error);
       res.status(500).json({ message: "Error: " + error.message });
+    }
+  });
+
+  // Test email service for manual verification
+  app.post("/api/test-email", async (req, res) => {
+    try {
+      const { type = "approval", email = "test@example.com", name = "Test User", role = "decision_maker", notes = "Test approval from admin" } = req.body;
+      
+      if (type === "approval") {
+        const { sendManualVerificationApprovalEmail } = await import("./email-service");
+        await sendManualVerificationApprovalEmail(email, name, role, notes);
+        res.json({ success: true, message: "Approval email sent successfully" });
+      } else if (type === "rejection") {
+        const { sendManualVerificationRejectionEmail } = await import("./email-service");
+        await sendManualVerificationRejectionEmail(email, name, role, notes);
+        res.json({ success: true, message: "Rejection email sent successfully" });
+      } else {
+        res.status(400).json({ message: "Invalid email type. Use 'approval' or 'rejection'" });
+      }
+    } catch (error) {
+      console.error("Test email error:", error);
+      res.status(500).json({ message: "Failed to send test email", error: error.message });
     }
   });
 

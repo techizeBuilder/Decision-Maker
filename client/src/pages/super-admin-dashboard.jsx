@@ -546,6 +546,18 @@ export default function SuperAdminDashboard() {
     retry: false,
   });
 
+  // Manual Verification Query
+  const { data: manualVerificationsData, isLoading: verificationsLoading, refetch: refetchVerifications } = useQuery({
+    queryKey: ["/api/super-admin/manual-verification"],
+    queryFn: async () => {
+      return apiRequest("/api/super-admin/manual-verification", { method: "GET" });
+    },
+    retry: false,
+  });
+
+  // Extract the verifications array from the response
+  const manualVerifications = manualVerificationsData?.verifications || [];
+
   // Helper function to get action badge variant
   const getActionBadgeVariant = (action) => {
     switch (action) {
@@ -1010,6 +1022,53 @@ export default function SuperAdminDashboard() {
     saveSettingsMutation.mutate(platformSettings);
   };
 
+  // Manual Verification Mutations
+  const approveVerificationMutation = useMutation({
+    mutationFn: async (verificationId) => {
+      return apiRequest(`/api/super-admin/manual-verification/${verificationId}/approve`, {
+        method: "POST",
+      });
+    },
+    onSuccess: () => {
+      refetchVerifications();
+      toast({
+        title: "Verification Approved",
+        description: "User has been manually verified and approved.",
+      });
+    },
+    onError: (error) => {
+      console.error("Error approving verification:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to approve verification. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const rejectVerificationMutation = useMutation({
+    mutationFn: async (verificationId) => {
+      return apiRequest(`/api/super-admin/manual-verification/${verificationId}/reject`, {
+        method: "POST",
+      });
+    },
+    onSuccess: () => {
+      refetchVerifications();
+      toast({
+        title: "Verification Rejected",
+        description: "User verification has been rejected.",
+      });
+    },
+    onError: (error) => {
+      console.error("Error rejecting verification:", error);
+      toast({
+        title: "Error", 
+        description: error.message || "Failed to reject verification. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const confirmSuspendUser = async (reason) => {
     try {
       await apiRequest(`/api/super-admin/users/${actionUser._id}/suspend`, {
@@ -1170,6 +1229,12 @@ export default function SuperAdminDashboard() {
                 className="text-sm whitespace-nowrap px-4 py-2"
               >
                 Activity Logs
+              </TabsTrigger>
+              <TabsTrigger
+                value="verification"
+                className="text-sm whitespace-nowrap px-4 py-2"
+              >
+                Manual Verification
               </TabsTrigger>
               {/* <TabsTrigger
                 value="settings"
@@ -3775,6 +3840,100 @@ export default function SuperAdminDashboard() {
                     </div>
                   )}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Manual Verification Tab */}
+          <TabsContent value="verification" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Manual Verification Queue</CardTitle>
+                <CardDescription>
+                  Review and approve users who need manual verification
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {verificationsLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </div>
+                ) : !manualVerifications || manualVerifications.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <UserCheck className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                    <p>No pending verifications</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {manualVerifications.map((verification) => (
+                      <Card key={verification._id} className="border-l-4 border-l-yellow-400">
+                        <CardContent className="p-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <h3 className="font-semibold text-lg">
+                                {verification.firstName} {verification.lastName}
+                              </h3>
+                              <p className="text-gray-600">{verification.userEmail}</p>
+                              <Badge variant="outline" className="mt-2">
+                                {verification.userRole === "sales_rep" ? "Sales Rep" : "Decision Maker"}
+                              </Badge>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-gray-500">
+                                Submitted: {new Date(verification.submittedAt).toLocaleDateString()}
+                              </p>
+                              <Badge variant="secondary" className="mt-1">
+                                {verification.status}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <p className="text-sm font-medium text-gray-700">LinkedIn Profile:</p>
+                              <a 
+                                href={verification.linkedinUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline text-sm break-all"
+                              >
+                                {verification.linkedinUrl}
+                              </a>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-700">Company Domain:</p>
+                              <p className="text-sm">{verification.companyDomain}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="mb-4">
+                            <p className="text-sm font-medium text-gray-700">Reason for Manual Review:</p>
+                            <p className="text-sm text-gray-600">{verification.reason}</p>
+                          </div>
+                          
+                          <div className="flex space-x-3">
+                            <Button
+                              onClick={() => approveVerificationMutation.mutate(verification._id)}
+                              disabled={approveVerificationMutation.isPending || rejectVerificationMutation.isPending}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              <UserCheck className="h-4 w-4 mr-2" />
+                              Approve
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              onClick={() => rejectVerificationMutation.mutate(verification._id)}
+                              disabled={approveVerificationMutation.isPending || rejectVerificationMutation.isPending}
+                            >
+                              <UserX className="h-4 w-4 mr-2" />
+                              Reject
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

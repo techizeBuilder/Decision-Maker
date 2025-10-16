@@ -44,15 +44,21 @@ export default function DecisionMakerProfessionalInfo() {
 
   const saveProfessionalInfoMutation = useMutation({
     mutationFn: async (data) => {
-      console.log("Submitting decision maker professional data:", data);
-      const response = await apiRequest(
-        "/api/decision-maker/professional-info",
-        {
-          method: "POST",
-          body: JSON.stringify(data),
-        },
-      );
-      return response;
+      console.log("Mutation triggered - Submitting decision maker professional data:", data);
+      try {
+        const response = await apiRequest(
+          "/api/decision-maker/professional-info",
+          {
+            method: "POST",
+            body: JSON.stringify(data),
+          },
+        );
+        console.log("API response received:", response);
+        return response;
+      } catch (error) {
+        console.error("API request failed:", error);
+        throw error;
+      }
     },
     onSuccess: (data) => {
       console.log("Decision maker professional info saved successfully:", data);
@@ -76,6 +82,20 @@ export default function DecisionMakerProfessionalInfo() {
   });
 
   const onSubmit = (data) => {
+    console.log("Form submission triggered with data:", data);
+    console.log("Form errors:", form.formState.errors);
+    console.log("Form is valid:", form.formState.isValid);
+    
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.error("Form has validation errors:", form.formState.errors);
+      toast({
+        title: "Validation Error",
+        description: "Please check all required fields are filled correctly.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     saveProfessionalInfoMutation.mutate(data);
   };
 
@@ -338,6 +358,22 @@ export default function DecisionMakerProfessionalInfo() {
                     type="submit"
                     disabled={saveProfessionalInfoMutation.isPending}
                     className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
+                    onClick={(e) => {
+                      console.log("Button clicked!");
+                      console.log("Form state:", form.formState);
+                      console.log("Form values:", form.getValues());
+                      console.log("Form errors:", form.formState.errors);
+                      console.log("Form isValid:", form.formState.isValid);
+                      console.log("Form isDirty:", form.formState.isDirty);
+                      
+                      // Manually trigger form validation
+                      form.trigger().then((isValid) => {
+                        console.log("Manual validation result:", isValid);
+                        if (!isValid) {
+                          console.log("Validation errors after trigger:", form.formState.errors);
+                        }
+                      });
+                    }}
                   >
                     {saveProfessionalInfoMutation.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />

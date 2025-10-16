@@ -32,6 +32,7 @@ import { apiRequest } from "@/lib/queryClient";
 export default function SalesRepPersonalInfo() {
   const [, setLocation] = useLocation();
   const [linkedinVerified, setLinkedinVerified] = useState(false);
+  const [linkedinNameMatches, setLinkedinNameMatches] = useState(false);
   const [linkedinVerifying, setLinkedinVerifying] = useState(false);
   const [linkedinError, setLinkedinError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -65,29 +66,42 @@ export default function SalesRepPersonalInfo() {
     setLinkedinError("");
     
     try {
+      // Get current form values for name matching
+      const currentValues = form.getValues();
+      
       const response = await apiRequest("/api/verify-linkedin", {
         method: "POST",
-        body: JSON.stringify({ linkedinUrl: url }),
+        body: JSON.stringify({ 
+          linkedinUrl: url,
+          firstName: currentValues.firstName,
+          lastName: currentValues.lastName
+        }),
       });
       
       if (response.verified) {
         setLinkedinVerified(true);
+        setLinkedinNameMatches(response.nameMatches || false);
         setLinkedinError("");
-        toast({
-          title: "LinkedIn Verified",
-          description: "Your LinkedIn profile has been automatically verified.",
-        });
+        
+        if (response.nameMatches) {
+          toast({
+            title: "LinkedIn Verified & Name Matches!",
+            description: "Your LinkedIn profile has been verified and your name matches. You're automatically verified!",
+          });
+        }
       } else {
         setLinkedinVerified(false);
+        setLinkedinNameMatches(false);
         setLinkedinError(response.message || "Invalid LinkedIn URL");
       }
     } catch (error) {
       setLinkedinVerified(false);
+      setLinkedinNameMatches(false);
       setLinkedinError(error.message || "Unable to verify LinkedIn profile");
     } finally {
       setLinkedinVerifying(false);
     }
-  }, [toast]);
+  }, [toast, form]);
 
   // Debounced verification effect
   useEffect(() => {
@@ -121,12 +135,23 @@ export default function SalesRepPersonalInfo() {
       return response;
     },
     onSuccess: (data) => {
-      console.log("Form submission successful:", data);
+      console.log("Sales rep personal info saved successfully:", data);
       toast({
         title: "Information Saved",
         description: "Your personal information has been saved successfully.",
       });
-      setLocation("/signup/sales-rep/package");
+      
+      // Store verification status in session for conditional routing
+      sessionStorage.setItem("needsEmailVerification", data.needsEmailVerification?.toString() || "false");
+      sessionStorage.setItem("verificationStatus", data.verificationStatus || "unverified");
+      
+      if (data.needsEmailVerification) {
+        // Route to email verification step
+        setLocation("/signup/sales-rep/verify-email");
+      } else {
+        // Skip email verification and go to package selection
+        setLocation("/signup/sales-rep/package");
+      }
     },
     onError: (error) => {
       console.error("Form submission error:", error);
@@ -143,6 +168,7 @@ export default function SalesRepPersonalInfo() {
     console.log("Form submission attempt:", data);
     console.log("Form errors:", form.formState.errors);
     console.log("LinkedIn verified:", linkedinVerified);
+    console.log("LinkedIn name matches:", linkedinNameMatches);
     console.log("Form valid:", form.formState.isValid);
 
     if (!linkedinVerified) {
@@ -153,7 +179,15 @@ export default function SalesRepPersonalInfo() {
       });
       return;
     }
-    savePersonalInfoMutation.mutate(data);
+    
+    // Include verification details in submission
+    const submissionData = {
+      ...data,
+      linkedinNameMatches,
+      linkedinVerified
+    };
+    
+    savePersonalInfoMutation.mutate(submissionData);
   };
 
   const isFormValid =

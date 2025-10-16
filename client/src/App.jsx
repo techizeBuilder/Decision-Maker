@@ -23,10 +23,12 @@ import AvailabilityPreferences from "@/pages/signup/availability-preferences";
 import NominateSalesRep from "@/pages/signup/nominate-sales-rep";
 import ChoosePackage from "@/pages/signup/choose-package";
 import SalesRepPersonalInfo from "@/pages/signup/sales-rep/personal-info";
+import SalesRepVerifyEmail from "@/pages/signup/sales-rep/verify-email";
 import SalesRepProfessionalInfo from "@/pages/signup/sales-rep/professional-info";
 import InviteDecisionMakers from "@/pages/signup/sales-rep/invite-decision-makers";
 import SalesRepChoosePackage from "@/pages/signup/sales-rep/choose-package";
 import DecisionMakerPersonalInfo from "@/pages/signup/decision-maker/personal-info";
+import DecisionMakerVerifyEmail from "@/pages/signup/decision-maker/verify-email";
 import DecisionMakerProfessionalInfo from "@/pages/signup/decision-maker/professional-info";
 import DecisionMakerAvailability from "@/pages/signup/decision-maker/availability";
 import DecisionMakerNominate from "@/pages/signup/decision-maker/nominate";
@@ -103,10 +105,12 @@ function Router() {
       <Route path="/signup/nominate" component={NominateSalesRep} />
       <Route path="/signup/package" component={ChoosePackage} />
       <Route path="/signup/sales-rep/personal-info" component={SalesRepPersonalInfo} />
+      <Route path="/signup/sales-rep/verify-email" component={SalesRepVerifyEmail} />
       <Route path="/signup/sales-rep/professional-info" component={SalesRepProfessionalInfo} />
       <Route path="/signup/sales-rep/invites" component={InviteDecisionMakers} />
       <Route path="/signup/sales-rep/package" component={SalesRepChoosePackage} />
       <Route path="/signup/decision-maker/personal-info" component={DecisionMakerPersonalInfo} />
+      <Route path="/signup/decision-maker/verify-email" component={DecisionMakerVerifyEmail} />
       <Route path="/signup/decision-maker/professional-info" component={DecisionMakerProfessionalInfo} />
       <Route path="/signup/decision-maker/availability" component={DecisionMakerAvailability} />
       <Route path="/signup/decision-maker/nominate" component={DecisionMakerNominate} />

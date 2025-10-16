@@ -111,31 +111,6 @@ export const salesRepPersonalInfoSchema = z.object({
 }, {
   message: "Email domain must match company domain",
   path: ["companyDomain"],
-}).refine((data) => {
-  // Extract name from LinkedIn URL and validate against first/last name
-  const { linkedinUrl, firstName, lastName } = data;
-  
-  // Extract the profile identifier from LinkedIn URL
-  const linkedinMatch = linkedinUrl.match(/linkedin\.com\/in\/([^\/\?]+)/);
-  if (!linkedinMatch) return false;
-  
-  const profileId = linkedinMatch[1].toLowerCase();
-  const cleanFirstName = firstName.toLowerCase().replace(/[^a-z]/g, '');
-  const cleanLastName = lastName.toLowerCase().replace(/[^a-z]/g, '');
-  
-  // Check various common LinkedIn URL patterns - BOTH names must be present
-  const cleanFirstLast = `${cleanFirstName}-${cleanLastName}`;
-  const cleanLastFirst = `${cleanLastName}-${cleanFirstName}`;
-  const cleanFullName = `${cleanFirstName}${cleanLastName}`;
-  
-  // Require BOTH first and last name to be present in the LinkedIn URL
-  return (profileId.includes(cleanFirstName) && profileId.includes(cleanLastName)) ||
-         profileId === cleanFirstLast ||
-         profileId === cleanLastFirst ||
-         profileId === cleanFullName;
-}, {
-  message: "LinkedIn URL must match your first and last name",
-  path: ["linkedinUrl"],
 });
 
 export const salesRepProfessionalSchema = z.object({
@@ -194,31 +169,6 @@ export const decisionMakerPersonalInfoSchema = z.object({
 }, {
   message: "Email domain must match company domain",
   path: ["companyDomain"],
-}).refine((data) => {
-  // Extract name from LinkedIn URL and validate against first/last name
-  const { linkedinUrl, firstName, lastName } = data;
-  
-  // Extract the profile identifier from LinkedIn URL
-  const linkedinMatch = linkedinUrl.match(/linkedin\.com\/in\/([^\/\?]+)/);
-  if (!linkedinMatch) return false;
-  
-  const profileId = linkedinMatch[1].toLowerCase();
-  const cleanFirstName = firstName.toLowerCase().replace(/[^a-z]/g, '');
-  const cleanLastName = lastName.toLowerCase().replace(/[^a-z]/g, '');
-  
-  // Check various common LinkedIn URL patterns - BOTH names must be present
-  const cleanFirstLast = `${cleanFirstName}-${cleanLastName}`;
-  const cleanLastFirst = `${cleanLastName}-${cleanFirstName}`;
-  const cleanFullName = `${cleanFirstName}${cleanLastName}`;
-  
-  // Require BOTH first and last name to be present in the LinkedIn URL
-  return (profileId.includes(cleanFirstName) && profileId.includes(cleanLastName)) ||
-         profileId === cleanFirstLast ||
-         profileId === cleanLastFirst ||
-         profileId === cleanFullName;
-}, {
-  message: "LinkedIn URL must match your first and last name",
-  path: ["linkedinUrl"],
 });
 
 // Central list of allowed Decision Maker job titles. "Other" requires manual approval.
@@ -269,9 +219,10 @@ export const decisionMakerProfessionalSchema = z
     }),
     customJobTitle: z
       .string()
-      .min(2, "Custom job title must be at least 2 characters")
-      .max(80, "Job title too long")
-      .optional(),
+      .optional()
+      .refine((val) => !val || (val.length >= 2 && val.length <= 80), {
+        message: "Custom job title must be between 2 and 80 characters",
+      }),
     company: z.string().min(2, "Company name is required"),
     industry: z.string().min(1, "Please select an industry"),
     companySize: z.string().min(1, "Please select company size"),

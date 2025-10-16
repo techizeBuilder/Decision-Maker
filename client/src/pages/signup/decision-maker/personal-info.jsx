@@ -32,6 +32,7 @@ import { apiRequest } from "@/lib/queryClient";
 export default function DecisionMakerPersonalInfo() {
   const [, setLocation] = useLocation();
   const [linkedinVerified, setLinkedinVerified] = useState(false);
+  const [linkedinNameMatches, setLinkedinNameMatches] = useState(false);
   const [linkedinVerifying, setLinkedinVerifying] = useState(false);
   const [linkedinError, setLinkedinError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -65,20 +66,35 @@ export default function DecisionMakerPersonalInfo() {
     setLinkedinError("");
     
     try {
+      // Get current form values for name matching
+      const currentValues = form.getValues();
+      
       const response = await apiRequest("/api/verify-linkedin", {
         method: "POST",
-        body: JSON.stringify({ linkedinUrl: url }),
+        body: JSON.stringify({ 
+          linkedinUrl: url,
+          firstName: currentValues.firstName,
+          lastName: currentValues.lastName
+        }),
       });
       
       if (response.verified) {
         setLinkedinVerified(true);
+        setLinkedinNameMatches(response.nameMatches || false);
         setLinkedinError("");
-        toast({
-          title: "LinkedIn Verified",
-          description: "Your LinkedIn profile has been automatically verified.",
-        });
+        
+        if (response.nameMatches) {
+          toast({
+            title: "LinkedIn Verified & Name Matches!",
+            description: "Your LinkedIn profile has been verified and your name matches. You're automatically verified!",
+          });
+        } else {
+          // Don't show any warning toast for name mismatch - just update state silently
+          console.log("LinkedIn verified but name doesn't match - proceeding to email verification");
+        }
       } else {
         setLinkedinVerified(false);
+        setLinkedinNameMatches(false);
         setLinkedinError(response.message || "Invalid LinkedIn URL");
       }
     } catch (error) {
@@ -87,7 +103,7 @@ export default function DecisionMakerPersonalInfo() {
     } finally {
       setLinkedinVerifying(false);
     }
-  }, [toast]);
+  }, [toast, form]);
 
   // Debounced verification effect
   useEffect(() => {
@@ -98,6 +114,7 @@ export default function DecisionMakerPersonalInfo() {
         verifyLinkedInUrl(linkedinUrl.trim());
       } else {
         setLinkedinVerified(false);
+        setLinkedinNameMatches(false);
         setLinkedinError("");
         setLinkedinVerifying(false);
       }
@@ -143,7 +160,18 @@ export default function DecisionMakerPersonalInfo() {
         title: "Information Saved",
         description: "Your personal information has been saved successfully.",
       });
-      setLocation("/signup/decision-maker/professional-info");
+      
+      // Store verification status in session for conditional routing
+      sessionStorage.setItem("needsEmailVerification", data.needsEmailVerification?.toString() || "false");
+      sessionStorage.setItem("verificationStatus", data.verificationStatus || "unverified");
+      
+      if (data.needsEmailVerification) {
+        // Route to email verification step
+        setLocation("/signup/decision-maker/verify-email");
+      } else {
+        // Skip email verification and go to professional info
+        setLocation("/signup/decision-maker/professional-info");
+      }
     },
     onError: (error) => {
       console.error("Decision maker form submission error:", error);
@@ -160,16 +188,17 @@ export default function DecisionMakerPersonalInfo() {
     console.log("Decision maker form submission attempt:", data);
     console.log("Form errors:", form.formState.errors);
     console.log("LinkedIn verified:", linkedinVerified);
+    console.log("LinkedIn name matches:", linkedinNameMatches);
 
-    if (!linkedinVerified) {
-      toast({
-        title: "LinkedIn Verification Required",
-        description: "Please verify your LinkedIn profile before proceeding.",
-        variant: "destructive",
-      });
-      return;
-    }
-    savePersonalInfoMutation.mutate(data);
+    // Allow submission regardless of LinkedIn verification status
+    // Include verification details in submission
+    const submissionData = {
+      ...data,
+      linkedinNameMatches,
+      linkedinVerified
+    };
+    
+    savePersonalInfoMutation.mutate(submissionData);
   };
 
   return (
@@ -351,10 +380,16 @@ export default function DecisionMakerPersonalInfo() {
                             Verifying LinkedIn profile...
                           </p>
                         )}
-                        {!linkedinVerifying && linkedinVerified && (
+                        {!linkedinVerifying && linkedinVerified && linkedinNameMatches && (
                           <p className="text-sm text-green-600 mt-1 flex items-center">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             LinkedIn profile verified automatically
+                          </p>
+                        )}
+                        {!linkedinVerifying && linkedinVerified && !linkedinNameMatches && (
+                          <p className="text-sm text-blue-600 mt-1 flex items-center">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            LinkedIn profile verified - proceeding to next step
                           </p>
                         )}
                       </FormItem>

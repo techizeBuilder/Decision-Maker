@@ -61,6 +61,17 @@ const userSchema = new mongoose.Schema(
     emailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String },
     emailVerificationTokenExpiry: { type: Date },
+    // User verification system
+    verification_status: { 
+      type: String, 
+      enum: ["verified", "unverified", "pending"], 
+      default: "unverified" 
+    },
+    verified_via: { 
+      type: String, 
+      enum: ["linkedin", "domain", "manual"], 
+      default: null 
+    },
     // Enterprise admin fields
     companyDomain: { type: String },
     domainVerified: { type: Boolean, default: false },
@@ -512,6 +523,33 @@ const activityLogSchema = new mongoose.Schema(
 );
 
 export const ActivityLog = mongoose.model("ActivityLog", activityLogSchema);
+
+// Manual Verification Queue Schema
+const manualVerificationSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    userEmail: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    linkedinUrl: { type: String },
+    companyDomain: { type: String },
+    linkedinVerificationFailed: { type: Boolean, default: false },
+    emailVerificationFailed: { type: Boolean, default: false },
+    status: { 
+      type: String, 
+      enum: ["pending", "approved", "rejected"], 
+      default: "pending" 
+    },
+    reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    reviewedAt: { type: Date },
+    reviewNotes: { type: String }
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const ManualVerification = mongoose.model("ManualVerification", manualVerificationSchema);
 
 export type ActivityLogDocument = mongoose.Document & {
   _id: mongoose.Types.ObjectId;
