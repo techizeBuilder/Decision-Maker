@@ -141,9 +141,10 @@ export default function SalesRepPersonalInfo() {
         description: "Your personal information has been saved successfully.",
       });
       
-      // Store verification status in session for conditional routing
+      // Store verification status and userId in session for conditional routing
       sessionStorage.setItem("needsEmailVerification", data.needsEmailVerification?.toString() || "false");
       sessionStorage.setItem("verificationStatus", data.verificationStatus || "unverified");
+      sessionStorage.setItem("signupUserId", data.userId || ""); // Store userId for VPS compatibility
       
       if (data.needsEmailVerification) {
         // Route to email verification step

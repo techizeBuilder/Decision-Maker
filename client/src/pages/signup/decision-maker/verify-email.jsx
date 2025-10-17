@@ -45,9 +45,18 @@ export default function DecisionMakerVerifyEmail() {
 
   const sendVerificationMutation = useMutation({
     mutationFn: async (data) => {
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🔧 Email verification - Using userId from sessionStorage:", userId);
+      
+      const requestData = {
+        ...data,
+        userId: userId // Include userId in request for VPS compatibility
+      };
+      
       const response = await apiRequest("/api/decision-maker/send-email-verification", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
       });
       return response;
     },
@@ -71,11 +80,16 @@ export default function DecisionMakerVerifyEmail() {
 
   const verifyCodeMutation = useMutation({
     mutationFn: async (code) => {
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🔧 Email verification code - Using userId from sessionStorage:", userId);
+      
       const response = await apiRequest("/api/decision-maker/verify-email-code", {
         method: "POST",
         body: JSON.stringify({ 
           code,
-          email: form.getValues().email 
+          email: form.getValues().email,
+          userId: userId // Include userId in request for VPS compatibility
         }),
       });
       return response;

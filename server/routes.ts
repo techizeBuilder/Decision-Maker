@@ -6167,16 +6167,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Send email verification for decision makers
   app.post("/api/decision-maker/send-email-verification", async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, userId: bodyUserId } = req.body;
       
       if (!email) {
         return res.status(400).json({ message: "Email is required" });
       }
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (fallback for VPS deployment)
+      const userId = (req.session as any)?.signupUserId || bodyUserId;
+      console.log("🔧 Email verification - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🔧 Email verification - Body userId:", bodyUserId);
+      console.log("🔧 Email verification - Final userId:", userId);
+      
       if (!userId) {
-        return res.status(400).json({ message: "No active signup session found" });
+        return res.status(400).json({ message: "No active signup session found or user ID provided" });
       }
 
       // Generate 6-digit verification code
@@ -6209,16 +6213,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Verify email code for decision makers
   app.post("/api/decision-maker/verify-email-code", async (req, res) => {
     try {
-      const { code, email } = req.body;
+      const { code, email, userId: bodyUserId } = req.body;
       
       if (!code || !email) {
         return res.status(400).json({ message: "Code and email are required" });
       }
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (fallback for VPS deployment)
+      const userId = (req.session as any)?.signupUserId || bodyUserId;
+      console.log("🔧 Email verification code - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🔧 Email verification code - Body userId:", bodyUserId);
+      console.log("🔧 Email verification code - Final userId:", userId);
+      
       if (!userId) {
-        return res.status(400).json({ message: "No active signup session found" });
+        return res.status(400).json({ message: "No active signup session found or user ID provided" });
       }
 
       // Get user and verify code
@@ -6261,16 +6269,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Send email verification for sales rep
   app.post("/api/sales-rep/send-email-verification", async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, userId: bodyUserId } = req.body;
       
       if (!email) {
         return res.status(400).json({ message: "Email is required" });
       }
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (fallback for VPS deployment)
+      const userId = (req.session as any)?.signupUserId || bodyUserId;
+      console.log("🔧 Sales Rep Email verification - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🔧 Sales Rep Email verification - Body userId:", bodyUserId);
+      console.log("🔧 Sales Rep Email verification - Final userId:", userId);
+      
       if (!userId) {
-        return res.status(400).json({ message: "No active signup session found" });
+        return res.status(400).json({ message: "No active signup session found or user ID provided" });
       }
 
       // Generate 6-digit verification code
@@ -6303,16 +6315,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Verify email code for sales rep
   app.post("/api/sales-rep/verify-email-code", async (req, res) => {
     try {
-      const { code, email } = req.body;
+      const { code, email, userId: bodyUserId } = req.body;
       
       if (!code || !email) {
         return res.status(400).json({ message: "Code and email are required" });
       }
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (fallback for VPS deployment)
+      const userId = (req.session as any)?.signupUserId || bodyUserId;
+      console.log("🔧 Sales Rep Email verification code - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🔧 Sales Rep Email verification code - Body userId:", bodyUserId);
+      console.log("🔧 Sales Rep Email verification code - Final userId:", userId);
+      
       if (!userId) {
-        return res.status(400).json({ message: "No active signup session found" });
+        return res.status(400).json({ message: "No active signup session found or user ID provided" });
       }
 
       // Get user and verify code
