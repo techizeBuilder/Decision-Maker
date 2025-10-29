@@ -43,10 +43,20 @@ export default function SalesRepProfessionalInfo() {
 
   const saveProfessionalInfoMutation = useMutation({
     mutationFn: async (data) => {
-      console.log("Submitting professional data:", data);
+      console.log("🚀 PROFESSIONAL INFO START - Submitting professional data:", data);
+      
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🚀 PROFESSIONAL INFO - Using userId from sessionStorage:", userId);
+      
+      const requestData = {
+        ...data,
+        userId: userId // Include userId in request for VPS compatibility
+      };
+      
       const response = await apiRequest("/api/sales-rep/professional-info", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
       });
       return response;
     },

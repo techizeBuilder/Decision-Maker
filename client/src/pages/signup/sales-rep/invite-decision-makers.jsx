@@ -124,10 +124,20 @@ export default function InviteDecisionMakers() {
 
   const saveInvitesMutation = useMutation({
     mutationFn: async (data) => {
-      console.log("Submitting invites data:", data);
+      console.log("🚀 INVITES START - Submitting invites data:", data);
+      
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🚀 INVITES - Using userId from sessionStorage:", userId);
+      
+      const requestData = {
+        ...data,
+        userId: userId // Include userId in request for VPS compatibility
+      };
+      
       const response = await apiRequest("/api/sales-rep/invites", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
       });
       return response;
     },

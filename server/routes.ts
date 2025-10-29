@@ -1023,12 +1023,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = salesRepProfessionalSchema.parse(req.body);
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (fallback for VPS deployment)
+      const userId = (req.session as any)?.signupUserId || req.body.userId;
+      console.log("🚀 BACKEND PROFESSIONAL INFO - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🚀 BACKEND PROFESSIONAL INFO - Body userId:", req.body.userId);
+      console.log("🚀 BACKEND PROFESSIONAL INFO - Final userId:", userId);
+      
       if (!userId) {
         return res
           .status(400)
-          .json({ message: "Please complete personal information first" });
+          .json({ message: "Please complete personal information first or provide user ID" });
       }
 
       // Update user with professional information
@@ -1068,11 +1072,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = salesRepInvitesSchema.parse(req.body);
 
-      // Get user ID from session
-      console.log("Sales rep invites - Session data:", req.session);
-      console.log("Sales rep invites - Session ID:", req.sessionID);
-      let userId = (req.session as any)?.signupUserId;
-      console.log("Sales rep invites - UserId from session:", userId);
+      // Get user ID from session or request body (fallback for VPS deployment)
+      console.log("🚀 BACKEND INVITES - Session data:", req.session);
+      console.log("🚀 BACKEND INVITES - Session ID:", req.sessionID);
+      let userId = (req.session as any)?.signupUserId || req.body.userId;
+      console.log("🚀 BACKEND INVITES - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🚀 BACKEND INVITES - Body userId:", req.body.userId);
+      console.log("🚀 BACKEND INVITES - Final userId:", userId);
 
       // If no session, try to find recently created sales rep as fallback
       if (!userId) {
