@@ -45,12 +45,24 @@ export default function DecisionMakerProfessionalInfo() {
   const saveProfessionalInfoMutation = useMutation({
     mutationFn: async (data) => {
       console.log("Mutation triggered - Submitting decision maker professional data:", data);
+      
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🚀 DM PROFESSIONAL INFO - Using userId from sessionStorage:", userId);
+      
+      const requestData = {
+        ...data,
+        userId: userId
+      };
+      
+      console.log("🚀 DM PROFESSIONAL INFO - Request payload:", requestData);
+      
       try {
         const response = await apiRequest(
           "/api/decision-maker/professional-info",
           {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify(requestData),
           },
         );
         console.log("API response received:", response);

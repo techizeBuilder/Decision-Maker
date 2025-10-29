@@ -47,9 +47,21 @@ export default function DecisionMakerNominate() {
   const saveNominationMutation = useMutation({
     mutationFn: async (data) => {
       console.log("Submitting decision maker nomination data:", data);
+      
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🚀 DM NOMINATE - Using userId from sessionStorage:", userId);
+      
+      const requestData = {
+        ...data,
+        userId: userId
+      };
+      
+      console.log("🚀 DM NOMINATE - Request payload:", requestData);
+      
       const response = await apiRequest("/api/decision-maker/nominate", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
       });
       return response;
     },

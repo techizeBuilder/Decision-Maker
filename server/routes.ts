@@ -6388,8 +6388,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = decisionMakerProfessionalSchema.parse(req.body);
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (VPS fallback)
+      const userId = (req.session as any)?.signupUserId || req.body.userId;
+      console.log("🚀 BACKEND DM PROFESSIONAL INFO - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🚀 BACKEND DM PROFESSIONAL INFO - Body userId:", req.body.userId);
+      console.log("🚀 BACKEND DM PROFESSIONAL INFO - Using userId:", userId);
+      
       if (!userId) {
         return res
           .status(400)
@@ -6437,8 +6441,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = decisionMakerAvailabilitySchema.parse(req.body);
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (VPS fallback)
+      const userId = (req.session as any)?.signupUserId || req.body.userId;
+      console.log("🚀 BACKEND DM AVAILABILITY - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🚀 BACKEND DM AVAILABILITY - Body userId:", req.body.userId);
+      console.log("🚀 BACKEND DM AVAILABILITY - Using userId:", userId);
+      
       if (!userId) {
         return res
           .status(400)
@@ -6474,8 +6482,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = decisionMakerNominationSchema.parse(req.body);
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (VPS fallback)
+      const userId = (req.session as any)?.signupUserId || req.body.userId;
+      console.log("🚀 BACKEND DM NOMINATE - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🚀 BACKEND DM NOMINATE - Body userId:", req.body.userId);
+      console.log("🚀 BACKEND DM NOMINATE - Using userId:", userId);
+      
       if (!userId) {
         return res
           .status(400)

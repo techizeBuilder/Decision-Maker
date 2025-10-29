@@ -55,10 +55,23 @@ export default function DecisionMakerAvailability() {
   });
 
   const saveAvailabilityMutation = useMutation({
-    mutationFn: (data) => apiRequest("/api/decision-maker/availability", {
-      method: "POST",
-      body: JSON.stringify(data)
-    }),
+    mutationFn: (data) => {
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🚀 DM AVAILABILITY - Using userId from sessionStorage:", userId);
+      
+      const requestData = {
+        ...data,
+        userId: userId
+      };
+      
+      console.log("🚀 DM AVAILABILITY - Request payload:", requestData);
+      
+      return apiRequest("/api/decision-maker/availability", {
+        method: "POST",
+        body: JSON.stringify(requestData)
+      });
+    },
     onSuccess: (data) => {
       toast({
         title: "Availability Preferences Saved",
