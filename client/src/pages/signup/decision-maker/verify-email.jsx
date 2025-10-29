@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,6 +42,15 @@ export default function DecisionMakerVerifyEmail() {
       email: "",
     },
   });
+
+  // Pre-fill email from sessionStorage on component mount
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem("userEmail");
+    if (storedEmail) {
+      form.setValue("email", storedEmail);
+      console.log("🔧 DM Pre-filled email from sessionStorage:", storedEmail);
+    }
+  }, [form]);
 
   const sendVerificationMutation = useMutation({
     mutationFn: async (data) => {

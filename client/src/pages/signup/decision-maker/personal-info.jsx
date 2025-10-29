@@ -165,6 +165,7 @@ export default function DecisionMakerPersonalInfo() {
       sessionStorage.setItem("needsEmailVerification", data.needsEmailVerification?.toString() || "false");
       sessionStorage.setItem("verificationStatus", data.verificationStatus || "unverified");
       sessionStorage.setItem("signupUserId", data.userId || ""); // Store userId for VPS compatibility
+      sessionStorage.setItem("userEmail", data.email || form.getValues().email); // Store email for verification page
       
       if (data.needsEmailVerification) {
         // Route to email verification step
@@ -338,7 +339,7 @@ export default function DecisionMakerPersonalInfo() {
                         authentic connections
                       </p>
                     </div>
-                    {linkedinVerified && (
+                    {!linkedinVerifying && linkedinVerified && linkedinNameMatches && (
                       <CheckCircle className="text-green-600" size={20} />
                     )}
                   </div>
@@ -362,7 +363,7 @@ export default function DecisionMakerPersonalInfo() {
                               {linkedinVerifying && (
                                 <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
                               )}
-                              {!linkedinVerifying && linkedinVerified && (
+                              {!linkedinVerifying && linkedinVerified && linkedinNameMatches && (
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                               )}
                               {!linkedinVerifying && linkedinError && (
@@ -387,12 +388,12 @@ export default function DecisionMakerPersonalInfo() {
                             LinkedIn profile verified automatically
                           </p>
                         )}
-                        {!linkedinVerifying && linkedinVerified && !linkedinNameMatches && (
+                        {/* {!linkedinVerifying && linkedinVerified && !linkedinNameMatches && (
                           <p className="text-sm text-blue-600 mt-1 flex items-center">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             LinkedIn profile verified - proceeding to next step
                           </p>
-                        )}
+                        )} */}
                       </FormItem>
                     )}
                   />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,6 +42,15 @@ export default function SalesRepVerifyEmail() {
       email: "",
     },
   });
+
+  // Pre-fill email from sessionStorage on component mount
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem("userEmail");
+    if (storedEmail) {
+      form.setValue("email", storedEmail);
+      console.log("🔧 Pre-filled email from sessionStorage:", storedEmail);
+    }
+  }, [form]);
 
   const sendVerificationMutation = useMutation({
     mutationFn: async (data) => {
@@ -200,7 +209,7 @@ export default function SalesRepVerifyEmail() {
                           <Input
                             placeholder="Enter your work email"
                             {...field}
-                            className="mt-1"
+                            className="mt-1" disabled
                           />
                         </FormControl>
                         <FormMessage />

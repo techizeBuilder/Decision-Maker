@@ -49,10 +49,27 @@ export default function SalesRepChoosePackage() {
 
   const savePackageMutation = useMutation({
     mutationFn: async (data) => {
-      console.log("Submitting package data:", data);
+      console.log("🚀 PACKAGE SUBMISSION START - Submitting package data:", data);
+      
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("� PACKAGE SUBMISSION - Using userId from sessionStorage:", userId);
+      console.log("🚀 PACKAGE SUBMISSION - SessionStorage contents:", {
+        signupUserId: sessionStorage.getItem("signupUserId"),
+        userEmail: sessionStorage.getItem("userEmail"),
+        verificationStatus: sessionStorage.getItem("verificationStatus")
+      });
+      
+      const requestData = {
+        ...data,
+        userId: userId // Include userId in request for VPS compatibility
+      };
+      
+      console.log("🚀 PACKAGE SUBMISSION - Final request data:", requestData);
+      
       const response = await apiRequest("/api/sales-rep/package", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
       });
       return response;
     },

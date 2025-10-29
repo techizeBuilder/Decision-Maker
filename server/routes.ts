@@ -1270,14 +1270,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Complete signup with package selection
   app.post("/api/sales-rep/package", async (req, res) => {
     try {
+      console.log("🚀 BACKEND PACKAGE - Request received, parsing data...");
       const validatedData = salesRepPackageSchema.parse(req.body);
+      console.log("🚀 BACKEND PACKAGE - Validated data:", validatedData);
 
-      // Get user ID from session
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or request body (fallback for VPS deployment)
+      const userId = (req.session as any)?.signupUserId || req.body.userId;
+      console.log("� BACKEND PACKAGE - Session userId:", (req.session as any)?.signupUserId);
+      console.log("� BACKEND PACKAGE - Body userId:", req.body.userId);
+      console.log("� BACKEND PACKAGE - Request body keys:", Object.keys(req.body));
+      console.log("🚀 BACKEND PACKAGE - Full request body:", JSON.stringify(req.body, null, 2));
+      console.log("🚀 BACKEND PACKAGE - Final userId:", userId);
+      
       if (!userId) {
+        console.log("🚀 BACKEND PACKAGE - ERROR: No userId found!");
         return res
           .status(400)
-          .json({ message: "Please complete previous steps first" });
+          .json({ message: "Please complete previous steps first or provide user ID" });
       }
 
       // Fetch the subscription plan to get the enum value

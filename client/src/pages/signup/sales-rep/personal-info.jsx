@@ -145,6 +145,7 @@ export default function SalesRepPersonalInfo() {
       sessionStorage.setItem("needsEmailVerification", data.needsEmailVerification?.toString() || "false");
       sessionStorage.setItem("verificationStatus", data.verificationStatus || "unverified");
       sessionStorage.setItem("signupUserId", data.userId || ""); // Store userId for VPS compatibility
+      sessionStorage.setItem("userEmail", data.email || form.getValues().email); // Store email for verification page
       
       if (data.needsEmailVerification) {
         // Route to email verification step
@@ -330,7 +331,7 @@ export default function SalesRepPersonalInfo() {
                         platform quality
                       </p>
                     </div>
-                    {linkedinVerified && (
+                    {!linkedinVerifying && linkedinVerified && linkedinNameMatches && (
                       <CheckCircle className="text-green-600" size={20} />
                     )}
                   </div>
@@ -354,7 +355,7 @@ export default function SalesRepPersonalInfo() {
                               {linkedinVerifying && (
                                 <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
                               )}
-                              {!linkedinVerifying && linkedinVerified && (
+                              {!linkedinVerifying && linkedinVerified && linkedinNameMatches && (
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                               )}
                               {!linkedinVerifying && linkedinError && (
@@ -367,7 +368,7 @@ export default function SalesRepPersonalInfo() {
                         {linkedinError && (
                           <p className="text-sm text-red-600 mt-1">{linkedinError}</p>
                         )}
-                        {linkedinVerifying && (
+                        {/* {linkedinVerifying && (
                           <p className="text-sm text-blue-600 mt-1 flex items-center">
                             <Clock className="h-3 w-3 mr-1" />
                             Verifying LinkedIn profile...
@@ -378,7 +379,19 @@ export default function SalesRepPersonalInfo() {
                             <CheckCircle className="h-3 w-3 mr-1" />
                             LinkedIn profile verified automatically
                           </p>
+                        )} */}
+                        {!linkedinVerifying && linkedinVerified && linkedinNameMatches && (
+                          <p className="text-sm text-green-600 mt-1 flex items-center">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            LinkedIn profile verified automatically
+                          </p>
                         )}
+                        {/* {!linkedinVerifying && linkedinVerified && !linkedinNameMatches && (
+                          <p className="text-sm text-blue-600 mt-1 flex items-center">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Work Email verification required
+                          </p>
+                        )} */}
                       </FormItem>
                     )}
                   />
