@@ -127,8 +127,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get current user's package limits during signup
   app.get("/api/user-package-limits", async (req, res) => {
     try {
-      // Get user ID from session during signup
-      const userId = (req.session as any)?.signupUserId;
+      // Get user ID from session or query parameter (VPS fallback)
+      const userId = (req.session as any)?.signupUserId || req.query.userId;
+      console.log("🚀 BACKEND PACKAGE LIMITS - Session userId:", (req.session as any)?.signupUserId);
+      console.log("🚀 BACKEND PACKAGE LIMITS - Query userId:", req.query.userId);
+      console.log("🚀 BACKEND PACKAGE LIMITS - Using userId:", userId);
+      
       if (!userId) {
         return res.status(400).json({ message: "No active signup session" });
       }

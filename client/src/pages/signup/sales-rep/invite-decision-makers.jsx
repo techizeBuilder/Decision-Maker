@@ -110,6 +110,19 @@ export default function InviteDecisionMakers() {
     error: limitsError,
   } = useQuery({
     queryKey: ["/api/user-package-limits"],
+    queryFn: async () => {
+      // Get userId from sessionStorage for VPS compatibility
+      const userId = sessionStorage.getItem("signupUserId");
+      console.log("🚀 PACKAGE LIMITS - Using userId from sessionStorage:", userId);
+      
+      const url = userId 
+        ? `/api/user-package-limits?userId=${encodeURIComponent(userId)}`
+        : `/api/user-package-limits`;
+      
+      console.log("🚀 PACKAGE LIMITS - Request URL:", url);
+      
+      return apiRequest(url);
+    },
     retry: 1,
     retryOnMount: false,
     refetchOnWindowFocus: false,
