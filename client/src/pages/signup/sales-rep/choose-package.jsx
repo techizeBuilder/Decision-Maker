@@ -262,14 +262,14 @@ export default function SalesRepChoosePackage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50">
-      <div className="max-w-4xl mx-auto mt-16 px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pt-20 sm:pt-24 lg:pt-20">
         {/* Progress Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               Step 2 of 4
             </span>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               50% Complete
             </span>
           </div>
@@ -277,11 +277,11 @@ export default function SalesRepChoosePackage() {
         </div>
 
         {/* Main Content */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Choose Your Package
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Select the plan that best fits your sales goals
           </p>
         </div>
@@ -297,7 +297,7 @@ export default function SalesRepChoosePackage() {
                     <RadioGroup
                       onValueChange={field.onChange}
                       value={field.value}
-                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-8"
+                      className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8"
                     >
                       {plansLoading ? (
                         <div className="col-span-full flex justify-center py-8">

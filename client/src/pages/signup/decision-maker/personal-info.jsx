@@ -205,14 +205,14 @@ export default function DecisionMakerPersonalInfo() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50">
-      <div className="max-w-2xl mx-auto mt-16 px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pt-20 sm:pt-24 lg:pt-20">
         {/* Progress Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               Step 1 of 4
             </span>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               25% Complete
             </span>
           </div>
@@ -221,12 +221,12 @@ export default function DecisionMakerPersonalInfo() {
 
         {/* Main Form Card */}
         <Card className="shadow-lg">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 Personal Information
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Let's start with your basic details and LinkedIn verification
               </p>
             </div>
@@ -234,10 +234,10 @@ export default function DecisionMakerPersonalInfo() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
               >
                 {/* Name Fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="firstName"
@@ -250,7 +250,7 @@ export default function DecisionMakerPersonalInfo() {
                           <Input
                             placeholder="Enter your first name"
                             {...field}
-                            className="mt-1"
+                            className="mt-1 h-11"
                           />
                         </FormControl>
                         <FormMessage />
@@ -269,7 +269,7 @@ export default function DecisionMakerPersonalInfo() {
                           <Input
                             placeholder="Enter your last name"
                             {...field}
-                            className="mt-1"
+                            className="mt-1 h-11"
                           />
                         </FormControl>
                         <FormMessage />
@@ -292,7 +292,7 @@ export default function DecisionMakerPersonalInfo() {
                           type="email"
                           placeholder="Enter your email address"
                           {...field}
-                          className="mt-1"
+                          className="mt-1 h-11"
                         />
                       </FormControl>
                       <FormMessage />
@@ -313,7 +313,7 @@ export default function DecisionMakerPersonalInfo() {
                         <Input
                           placeholder="Enter your company domain (e.g., company.com)"
                           {...field}
-                          className="mt-1"
+                          className="mt-1 h-11"
                         />
                       </FormControl>
                       <FormMessage />

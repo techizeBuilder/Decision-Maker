@@ -106,14 +106,14 @@ export default function DecisionMakerAvailability() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50">
-      <div className="max-w-2xl mx-auto mt-16 px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pt-20 sm:pt-24 lg:pt-20">
         {/* Progress Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               Step 3 of 4
             </span>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               75% Complete
             </span>
           </div>

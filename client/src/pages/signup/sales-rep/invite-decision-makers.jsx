@@ -306,14 +306,14 @@ export default function InviteDecisionMakers() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50">
-      <div className="max-w-2xl mx-auto mt-16 px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pt-20 sm:pt-24 lg:pt-20">
         {/* Progress Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               Step 4 of 4
             </span>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               100% Complete
             </span>
           </div>
@@ -322,7 +322,7 @@ export default function InviteDecisionMakers() {
 
         {/* Main Form Card */}
         <Card className="shadow-lg">
-          <CardContent className="p-8">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
             {limitsLoading ? (
               <div className="text-center mb-8">
                 <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
@@ -516,9 +516,11 @@ export default function InviteDecisionMakers() {
                                     className={`pr-8 ${
                                       emailValidationStates[index]?.error 
                                         ? 'border-red-500 focus:border-red-500' 
-                                        : emailValidationStates[index]?.isValid 
-                                        ? 'border-green-500 focus:border-green-500' 
-                                        : ''
+                                        : 
+                                        // emailValidationStates[index]?.isValid 
+                                        // ? 'border-green-500 focus:border-green-500' 
+                                        // : 
+                                        ''
                                     }`}
                                   />
                                   {/* Validation status icon */}
@@ -526,9 +528,9 @@ export default function InviteDecisionMakers() {
                                     {emailValidationStates[index]?.isValidating && (
                                       <Clock className="h-4 w-4 text-gray-400 animate-pulse" />
                                     )}
-                                    {!emailValidationStates[index]?.isValidating && emailValidationStates[index]?.isValid && (
+                                    {/* {!emailValidationStates[index]?.isValidating && emailValidationStates[index]?.isValid && (
                                       <CheckCircle className="h-4 w-4 text-green-500" />
-                                    )}
+                                    )} */}
                                     {!emailValidationStates[index]?.isValidating && emailValidationStates[index]?.error && (
                                       <XCircle className="h-4 w-4 text-red-500" />
                                     )}
@@ -615,25 +617,25 @@ export default function InviteDecisionMakers() {
                 </Button>
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between pt-6">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 sm:justify-between pt-6">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() =>
                       setLocation("/signup/sales-rep/professional-info")
                     }
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 order-3 sm:order-1 w-full sm:w-auto"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Back
                   </Button>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 order-1 sm:order-2">
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={skipStep}
-                      className="text-gray-600"
+                      className="text-gray-600 w-full sm:w-auto"
                     >
                       Skip for now
                     </Button>
@@ -641,7 +643,7 @@ export default function InviteDecisionMakers() {
                     <Button
                       type="submit"
                       disabled={saveInvitesMutation.isPending}
-                      className="flex items-center gap-2 bg-blue-600 hover:bg-purple-700"
+                      className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-purple-700 w-full sm:w-auto h-11"
                     >
                       {saveInvitesMutation.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

@@ -146,14 +146,14 @@ export default function DecisionMakerProfessionalInfo() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50">
-      <div className="max-w-2xl mx-auto mt-16 px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pt-20 sm:pt-24 lg:pt-20">
         {/* Progress Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               Step 2 of 4
             </span>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               50% Complete
             </span>
           </div>
@@ -162,12 +162,12 @@ export default function DecisionMakerProfessionalInfo() {
 
         {/* Main Form Card */}
         <Card className="shadow-lg">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 Professional Background
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Tell us about your professional experience and current role
               </p>
             </div>
@@ -197,7 +197,7 @@ export default function DecisionMakerProfessionalInfo() {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger className="mt-1 h-11">
                             <SelectValue placeholder="Select your job title" />
                           </SelectTrigger>
                         </FormControl>
@@ -226,7 +226,7 @@ export default function DecisionMakerProfessionalInfo() {
                           <Input
                             placeholder="e.g., Innovation Evangelist"
                             {...field}
-                            className="mt-1"
+                            className="mt-1 h-11"
                           />
                         </FormControl>
                         <p className="text-xs text-amber-600 mt-1">
@@ -251,7 +251,7 @@ export default function DecisionMakerProfessionalInfo() {
                         <Input
                           placeholder="Enter your company name"
                           {...field}
-                          className="mt-1"
+                          className="mt-1 h-11"
                         />
                       </FormControl>
                       <FormMessage />
@@ -273,7 +273,7 @@ export default function DecisionMakerProfessionalInfo() {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger className="mt-1 h-11">
                             <SelectValue placeholder="Select your industry" />
                           </SelectTrigger>
                         </FormControl>
@@ -304,7 +304,7 @@ export default function DecisionMakerProfessionalInfo() {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger className="mt-1 h-11">
                             <SelectValue placeholder="Select company size" />
                           </SelectTrigger>
                         </FormControl>
@@ -335,7 +335,7 @@ export default function DecisionMakerProfessionalInfo() {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger className="mt-1 h-11">
                             <SelectValue placeholder="Select years of experience" />
                           </SelectTrigger>
                         </FormControl>

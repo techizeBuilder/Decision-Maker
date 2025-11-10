@@ -156,14 +156,14 @@ export default function SalesRepVerifyEmail() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50">
-      <div className="max-w-2xl mx-auto mt-16 px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pt-20 sm:pt-24 lg:pt-20">
         {/* Progress Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               Step 1.5 of 4
             </span>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
               30% Complete
             </span>
           </div>
@@ -174,7 +174,7 @@ export default function SalesRepVerifyEmail() {
         <Button
           variant="ghost"
           onClick={handleBack}
-          className="mb-6 flex items-center text-gray-600 hover:text-gray-900"
+          className="mb-4 sm:mb-6 flex items-center text-gray-600 hover:text-gray-900 w-full sm:w-auto"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Personal Info
@@ -182,13 +182,13 @@ export default function SalesRepVerifyEmail() {
 
         {/* Main Form Card */}
         <Card className="shadow-lg">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <Mail className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            <div className="text-center mb-6 sm:mb-8">
+              <Mail className="h-12 w-12 sm:h-16 sm:w-16 text-blue-600 mx-auto mb-4" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 Email Verification
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Since your LinkedIn profile name doesn't match your entered name, 
                 please verify your work email to complete verification.
               </p>
@@ -209,7 +209,7 @@ export default function SalesRepVerifyEmail() {
                           <Input
                             placeholder="Enter your work email"
                             {...field}
-                            className="mt-1" disabled
+                            className="mt-1 h-11" disabled
                           />
                         </FormControl>
                         <FormMessage />
